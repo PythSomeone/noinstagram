@@ -8,8 +8,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.NoInstagram"
-        android:fullBackupContent="">
+        android:theme="@style/Theme.NoInstagram">
         <activity
             android:name=".MainActivity"
             android:exported="true"
