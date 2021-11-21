@@ -111,7 +111,7 @@ fun FirstPageScreenContent(
                 onClick()
             })
         Spacer(Modifier.height(30.dp))
-        LoginWithEmailButton()
+        LoginWithEmailButton(navController)
         Spacer(Modifier.height(30.dp))
         SignUpTextBox()
     }
