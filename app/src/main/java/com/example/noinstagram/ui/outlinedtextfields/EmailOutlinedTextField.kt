@@ -14,9 +14,9 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun EmailOutlinedTextField() {
-    var email by remember { mutableStateOf("") }
+    var userEmail by remember { mutableStateOf("") }
     OutlinedTextField(
-        value = email,
+        value = userEmail,
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Color.White,
             unfocusedBorderColor = Color.White
@@ -25,7 +25,7 @@ fun EmailOutlinedTextField() {
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         label = { Text(text = "Email", color = Color.White) },
         onValueChange = {
-            email = it
+            userEmail = it
         },
         modifier = Modifier.width(300.dp)
     )

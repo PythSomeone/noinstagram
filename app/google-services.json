@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "612671903128",
+    "project_id": "noinstagram-e6c32",
+    "storage_bucket": "noinstagram-e6c32.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:612671903128:android:545891e890fbc9448f87ed",
+        "android_client_info": {
+          "package_name": "com.example.noinstagram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "612671903128-n8m0967ke82pb1gadogav9ebosd0btn1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.noinstagram",
+            "certificate_hash": "64d324c512565b6e97b421712b25d66eb5572311"
+          }
+        },
+        {
+          "client_id": "612671903128-mit8lhckd4b4vdbs443p7vcf6vv9fk76.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5cba13EF8OqRjNeJVCiHNbLPBXPPeNBg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "612671903128-mit8lhckd4b4vdbs443p7vcf6vv9fk76.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

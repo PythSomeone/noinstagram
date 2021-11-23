@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
                         FirstPage(navController, authViewModel)
                     }
                     composable("LoginPage") {
-                        LoginPage(navController)
+                        LoginScreen(navController)
                     }
                 }
             }
