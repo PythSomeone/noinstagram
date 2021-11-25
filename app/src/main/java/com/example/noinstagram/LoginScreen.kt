@@ -1,6 +1,5 @@
 package com.example.noinstagram
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,19 +31,15 @@ import com.google.firebase.ktx.Firebase
 
 @Composable
 fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewModel()) {
-
     var userEmail by remember { mutableStateOf("") }
     var userPassword by remember { mutableStateOf("") }
-
     var passwordVisibility by remember { mutableStateOf(false) }
     val icon = if (passwordVisibility)
         painterResource(id = R.drawable.ic_visibility_on)
     else
         painterResource(id = R.drawable.ic_visibility_off)
-
+        
     val state by viewModel.loadingState.collectAsState()
-
-
 
     Surface(
         color = MaterialTheme.colors.primary,
