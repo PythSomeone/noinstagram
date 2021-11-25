@@ -1,33 +1,21 @@
 package com.example.noinstagram
 
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.ExitToApp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import com.example.noinstagram.R
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,15 +26,8 @@ import com.example.noinstagram.ui.canva.NoInstagramCanvas
 import com.example.noinstagram.utils.LoadingState
 import com.example.noinstagram.viewmodel.AuthViewModel
 import com.example.noinstagram.viewmodel.LoginViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-
-
 
 
 @Composable
@@ -56,10 +37,10 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
     var userPassword by remember { mutableStateOf("") }
 
     var passwordVisibility by remember { mutableStateOf(false) }
-    val icon = if(passwordVisibility)
-        painterResource(id = com.example.noinstagram.R.drawable.ic_visibility_on)
+    val icon = if (passwordVisibility)
+        painterResource(id = R.drawable.ic_visibility_on)
     else
-        painterResource(id = com.example.noinstagram.R.drawable.ic_visibility_off)
+        painterResource(id = R.drawable.ic_visibility_off)
 
     val state by viewModel.loadingState.collectAsState()
 
@@ -72,9 +53,6 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
     ) {
         LoginScreenBackground()
 
-
-
-
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -82,12 +60,6 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                 Spacer(Modifier.height(70.dp))
                 NoInstagramCanvas()
 
-//                IconButton(onClick = { FirebaseAuth.getInstance().signOut() }) {
-//                    Icon(
-//                        imageVector = Icons.Rounded.ExitToApp,
-//                        contentDescription = null,
-//                    )
-//                }
                 Spacer(Modifier.height(70.dp))
                 LoginToAccountTextBox()
 
@@ -101,7 +73,13 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                         unfocusedBorderColor = Color.White
                     ),
                     shape = RoundedCornerShape(24.dp),
-                    label = { Text(text = "Email", color = Color.White, modifier = Modifier.padding(start = 20.dp)) },
+                    label = {
+                        Text(
+                            text = "Email",
+                            color = Color.White,
+                            modifier = Modifier.padding(start = 20.dp)
+                        )
+                    },
                     onValueChange = {
                         userEmail = it
                     }
@@ -121,20 +99,24 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                     ),
                     shape = RoundedCornerShape(24.dp),
                     label = {
-                        Text(text = "Password", color = Color.White, modifier = Modifier.padding(start = 20.dp))
+                        Text(
+                            text = "Password",
+                            color = Color.White,
+                            modifier = Modifier.padding(start = 20.dp)
+                        )
                     },
                     trailingIcon = {
                         IconButton(onClick = {
                             passwordVisibility = !passwordVisibility
-                        }){
+                        }) {
                             Icon(
                                 painter = icon,
-                                contentDescription = "Visibility icon")
+                                contentDescription = "Visibility icon"
+                            )
                         }
                     },
-                    visualTransformation = if(passwordVisibility) VisualTransformation.None
+                    visualTransformation = if (passwordVisibility) VisualTransformation.None
                     else PasswordVisualTransformation()
-
 
 
                 )
@@ -143,7 +125,12 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
                 Button(
                     enabled = userEmail.isNotEmpty() && userPassword.isNotEmpty(),
-                    onClick = { viewModel.signInWithEmailAndPassword(userEmail.trim(), userPassword.trim()) },
+                    onClick = {
+                        viewModel.signInWithEmailAndPassword(
+                            userEmail.trim(),
+                            userPassword.trim()
+                        )
+                    },
                     shape = RoundedCornerShape(24.dp),
                     modifier = Modifier
                         .width(300.dp)
@@ -153,66 +140,23 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                     },
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
                 )
+                when (state.status) {
+                    LoadingState.Status.SUCCESS -> {
+                        Text(text = "Success")
+                    }
+                    LoadingState.Status.FAILED -> {
+                        Text(text = state.msg ?: "Error")
+                    }
+                    LoadingState.Status.IDLE -> {
+                        Text("")
+                    }
+                    else -> {
+                    }
+                }
 
-//                        val context = LocalContext.current
-//                        val token = "612671903128-mit8lhckd4b4vdbs443p7vcf6vv9fk76.apps.googleusercontent.com"
-//
-//                    OutlinedButton(
-//                        border = ButtonDefaults.outlinedBorder.copy(width = 1.dp),
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .height(50.dp),
-//                        onClick = {
-//                            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                                .requestIdToken(token)
-//                                .requestEmail()
-//                                .build()
-//
-//                            val googleSignInClient = GoogleSignIn.getClient(context, gso)
-//                            launcher.launch(googleSignInClient.signInIntent)
-//                        },
-//                        content = {
-//                            Row(
-//                                modifier = Modifier.fillMaxWidth(),
-//                                horizontalArrangement = Arrangement.SpaceBetween,
-//                                verticalAlignment = Alignment.CenterVertically,
-//                                content = {
-//                                    Icon(
-//                                        tint = Color.Unspecified,
-//                                        painter = painterResource(id = R.drawable.googleg_standard_color_18),
-//                                        contentDescription = null,
-//                                    )
-//                                    Text(
-//                                        style = MaterialTheme.typography.button,
-//                                        color = MaterialTheme.colors.onSurface,
-//                                        text = "Google"
-//                                    )
-//                                    Icon(
-//                                        tint = Color.Transparent,
-//                                        imageVector = Icons.Default.MailOutline,
-//                                        contentDescription = null,
-//                                    )
-//                                }
-//                            )
-//                        }
-//                    )
-
-                        when(state.status) {
-                            LoadingState.Status.SUCCESS -> {
-                                Text(text = "Success")
-                            }
-                            LoadingState.Status.FAILED -> {
-                                Text(text = state.msg ?: "Error")
-                            }
-                            LoadingState.Status.IDLE -> {
-                                Text("")
-                            }
-                            else -> { }
-                        }
-
-                        if (Firebase.auth.currentUser != null){
-                            Text(text = Firebase.auth.currentUser?.email.toString())
-                        }
+                if (Firebase.auth.currentUser != null) {
+                    Text(text = Firebase.auth.currentUser?.email.toString())
+                }
                 Text(
                     text = "Forgot your password?",
                     fontSize = 16.sp,
@@ -244,13 +188,11 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                         fontFamily = FontFamily(Font(R.font.verdana))
                     )
                 }
-                    }
-            )
+            }
+        )
     }
 
 }
-
-
 
 
 @Preview(showBackground = true)
