@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">NoInstagram</string>
+    <string name="facebook_app_id">458476595216657</string>
+    <string name="fb_login_protocol_scheme">fb458476595216657</string>
 </resources>

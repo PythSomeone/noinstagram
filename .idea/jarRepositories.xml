@@ -15,6 +15,9 @@
       <option name="id" value="Google" />
       <option name="name" value="Google" />
       <option name="url" value="https://dl.google.com/dl/android/maven2/" />
+      <option name="id" value="MavenRepo" />
+      <option name="name" value="MavenRepo" />
+      <option name="url" value="https://repo.maven.apache.org/maven2/" />
     </remote-repository>
   </component>
 </project>
