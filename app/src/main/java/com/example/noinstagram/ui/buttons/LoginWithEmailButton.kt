@@ -12,13 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.noinstagram.R
 import com.example.noinstagram.ui.theme.LightBlue
 
 @Composable
-fun LoginWithEmailButton() {
+fun LoginWithEmailButton(navController: NavController) {
     FloatingActionButton(
-        onClick = {},
+        onClick = { navController.navigate("LoginPage") },
         shape = RoundedCornerShape(24.dp),
         modifier = Modifier
             .width(250.dp),

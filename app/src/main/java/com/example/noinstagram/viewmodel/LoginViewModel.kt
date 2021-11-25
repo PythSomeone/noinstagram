@@ -33,5 +33,4 @@ class LoginViewModel : ViewModel() {
             loadingState.emit(LoadingState.error(e.localizedMessage))
         }
     }
-
 }
