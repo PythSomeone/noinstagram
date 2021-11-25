@@ -140,23 +140,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                     },
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
                 )
-                when (state.status) {
-                    LoadingState.Status.SUCCESS -> {
-                        Text(text = "Success")
-                    }
-                    LoadingState.Status.FAILED -> {
-                        Text(text = state.msg ?: "Error")
-                    }
-                    LoadingState.Status.IDLE -> {
-                        Text("")
-                    }
-                    else -> {
-                    }
-                }
 
-                if (Firebase.auth.currentUser != null) {
-                    Text(text = Firebase.auth.currentUser?.email.toString())
-                }
                 Text(
                     text = "Forgot your password?",
                     fontSize = 16.sp,
