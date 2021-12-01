@@ -167,26 +167,9 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                     fontFamily = FontFamily(Font(R.font.verdana))
                 )
                 Spacer(Modifier.height(10.dp))
-//                TextButton(onClick = { /* Do something! */ }) {
-//                    Text(
-//                        text = "Click here",
-//                        fontSize = 16.sp,
-//                        color = Color.Black,
-//                        fontFamily = FontFamily(Font(R.font.verdana))
-//                    )
-//                }
-                LoginWithEmailButton(navController)
-                Spacer(Modifier.height(10.dp))
-                Text(
-                    text = "Don't have an account?",
-                    fontSize = 16.sp,
-                    color = Color.White,
-                    fontFamily = FontFamily(Font(R.font.verdana))
-                )
-                Spacer(Modifier.height(10.dp))
-                TextButton(onClick = { /* Do something! */ }) {
+                TextButton(onClick = { navController.navigate("LoginPage") }) {
                     Text(
-                        text = "Sign up",
+                        text = "Click here",
                         fontSize = 16.sp,
                         color = Color.Black,
                         fontFamily = FontFamily(Font(R.font.verdana))

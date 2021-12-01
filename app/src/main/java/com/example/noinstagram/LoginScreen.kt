@@ -159,7 +159,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                     fontFamily = FontFamily(Font(R.font.verdana))
                 )
                 Spacer(Modifier.height(10.dp))
-                TextButton(onClick = { /* Do something! */ }) {
+                TextButton(onClick = { navController.navigate("RegisterPage") }) {
                     Text(
                         text = "Sign up",
                         fontSize = 16.sp,

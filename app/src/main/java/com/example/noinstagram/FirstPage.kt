@@ -113,13 +113,13 @@ fun FirstPageScreenContent(
         Spacer(Modifier.height(30.dp))
         LoginWithEmailButton(navController)
         Spacer(Modifier.height(30.dp))
-        SignUpTextBox()
+        SignUpTextBox(navController)
     }
 }
 
 @Composable
-fun SignUpTextBox() {
-    TextButton(onClick = { /* Do something! */ }) {
+fun SignUpTextBox(navController: NavController) {
+    TextButton(onClick = { navController.navigate("RegisterPage") }) {
         Text(
             text = "Sign up",
             fontSize = 16.sp,

@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.ui.theme.NoInstagramTheme
 import com.example.noinstagram.viewmodel.AuthViewModel
+import com.example.noinstagram.viewmodel.RegisterViewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -28,6 +29,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("LoginPage") {
                         LoginScreen(navController)
+                    }
+                    composable("RegisterPage"){
+                        RegisterScreen(navController, RegisterViewModel())
                     }
                 }
             }
