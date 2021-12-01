@@ -1,12 +1,11 @@
 package com.example.noinstagram.utils.database
 
-import com.example.noinstagram.interfaces.DatabaseHandler
 import com.example.noinstagram.model.UserModel
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
-class AccountHandler : DatabaseHandler {
+class AccountHandler {
 
     private val database = Firebase.database("https://noinstagram-e6c32-default-rtdb.europe-west1.firebasedatabase.app")
     private val refName: String = "Accounts"

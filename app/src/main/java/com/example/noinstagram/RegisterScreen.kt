@@ -146,6 +146,7 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                     enabled = userEmail.isNotEmpty() && userPassword.isNotEmpty(),
                     onClick = {
                         viewModel.createUserWithEmailAndPassword(
+                            userName.trim(),
                             userEmail.trim(),
                             userPassword.trim()
                         )
