@@ -29,6 +29,9 @@ class MainActivity : ComponentActivity() {
                     composable("LoginPage") {
                         LoginScreen(navController)
                     }
+                    composable("HomePage") {
+                        HomeScreen()
+                    }
                 }
             }
         }

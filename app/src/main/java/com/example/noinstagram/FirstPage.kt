@@ -102,7 +102,8 @@ fun FirstPageScreenContent(
                 facebookLoginButton.performClick()
             })
         Spacer(Modifier.height(30.dp))
-        GoogleButton(text = "Sign in with Google",
+        GoogleButton(navController,
+            text = "Sign in with Google",
             loadingText = "Signing in...",
             isLoading = isLoading,
             icon = painterResource(id = R.drawable.ic_google_logo),
@@ -113,13 +114,13 @@ fun FirstPageScreenContent(
         Spacer(Modifier.height(30.dp))
         LoginWithEmailButton(navController)
         Spacer(Modifier.height(30.dp))
-        SignUpTextBox()
+        SignUpTextBox(navController)
     }
 }
 
 @Composable
-fun SignUpTextBox() {
-    TextButton(onClick = { /* Do something! */ }) {
+fun SignUpTextBox(navController: NavController) {
+    TextButton(onClick = { }) {
         Text(
             text = "Sign up",
             fontSize = 16.sp,
