@@ -1,5 +1,7 @@
 package com.example.noinstagram
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,6 +21,7 @@ import com.example.noinstagram.utils.Navigation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@ExperimentalFoundationApi
 @Composable
 fun HomeScreen() {
     val navController = rememberNavController()
@@ -32,8 +35,10 @@ fun HomeScreen() {
             )
         },
         bottomBar = { BottomNavigationBar(navController) },
-    ) {
-        Navigation(navController = navController)
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            Navigation(navController = navController)
+        }
     }
 }
 

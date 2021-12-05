@@ -1,5 +1,6 @@
 package com.example.noinstagram.utils
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
@@ -7,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.noinstagram.HomeScreenUi
 import com.example.noinstagram.R
+import com.example.noinstagram.UserProfileScreen
 
 
 sealed class NavigationItem(var route: String, var icon: Int, var title: String) {
@@ -17,6 +19,7 @@ sealed class NavigationItem(var route: String, var icon: Int, var title: String)
     object Profile : NavigationItem("profile", R.drawable.ic_baseline_person_24, "Profile")
 }
 
+@ExperimentalFoundationApi
 @Composable
 fun Navigation(navController: NavHostController) {
     NavHost(navController, startDestination = NavigationItem.Home.route) {
@@ -33,7 +36,7 @@ fun Navigation(navController: NavHostController) {
             //FollowersUi()
         }
         composable(NavigationItem.Profile.route) {
-            //ProfileUi()
+            UserProfileScreen()
         }
     }
 }
