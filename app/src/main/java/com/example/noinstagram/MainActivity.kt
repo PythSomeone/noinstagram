@@ -4,8 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -16,6 +15,7 @@ import com.example.noinstagram.viewmodel.AuthViewModel
 class MainActivity : ComponentActivity() {
     private val authViewModel: AuthViewModel by viewModels()
 
+    @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -29,13 +29,11 @@ class MainActivity : ComponentActivity() {
                     composable("LoginPage") {
                         LoginScreen(navController)
                     }
+                    composable("HomePage") {
+                        HomeScreen()
+                    }
                 }
             }
         }
     }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
 }

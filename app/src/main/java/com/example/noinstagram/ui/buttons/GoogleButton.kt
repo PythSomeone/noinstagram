@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.noinstagram.viewmodel.LoginViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -27,6 +28,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 
 @Composable
 fun GoogleButton(
+    navController: NavController,
     text: String,
     loadingText: String = "Signing in...",
     icon: Painter,
@@ -65,6 +67,7 @@ fun GoogleButton(
 
                     val googleSignInClient = GoogleSignIn.getClient(context, gso)
                     launcher.launch(googleSignInClient.signInIntent)
+                    navController.navigate("HomePage")
                 },
             )
             .width(250.dp),
