@@ -62,10 +62,8 @@ fun ProfileSection(
         ) {
             Column(modifier = Modifier.weight(2f)) {
                 ProfileDescription(
-                    displayName = userModel.displayName,
-                    description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
-                            "Integer sodales laoreet commodo. Phasellus a purus eu risus elementum consequat. " +
-                            "Aenean eu elit ut nunc convallis laoreet non ut libero. Suspendisse interdum placerat "
+                    displayName = userModel.displayName!!,
+                    description = userModel.description!!
                 )
             }
             Column(
