@@ -62,8 +62,8 @@ fun ProfileSection(
         ) {
             Column(modifier = Modifier.weight(2f)) {
                 ProfileDescription(
-                    displayName = userModel.displayName!!,
-                    description = userModel.description!!
+                    displayName = userModel?.displayName!!,
+                    description = userModel?.description!!
                 )
             }
             Column(

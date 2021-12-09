@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import com.example.noinstagram.HomeScreenUi
 import com.example.noinstagram.R
 import com.example.noinstagram.UserProfileScreen
+import com.example.noinstagram.data.UsersRepository
 
 
 sealed class NavigationItem(var route: String, var icon: Int, var title: String) {
