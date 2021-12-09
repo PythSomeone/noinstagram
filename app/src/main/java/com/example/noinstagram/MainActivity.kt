@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.ui.theme.NoInstagramTheme
+import com.example.noinstagram.utils.database.UserHandler
 import com.example.noinstagram.viewmodel.AuthViewModel
 
 
@@ -18,6 +19,7 @@ class MainActivity : ComponentActivity() {
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        UserHandler.userListener()
         setContent {
             NoInstagramTheme {
                 val navController = rememberNavController()

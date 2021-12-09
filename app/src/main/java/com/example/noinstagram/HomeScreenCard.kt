@@ -84,7 +84,7 @@ private fun PostHeader(post: Post) {
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
-            Text(text = post.user.displayName, style = MaterialTheme.typography.subtitle2)
+            Text(text = post.user.displayName!!, style = MaterialTheme.typography.subtitle2)
         }
         Icon(Icons.Filled.MoreVert, "")
     }
