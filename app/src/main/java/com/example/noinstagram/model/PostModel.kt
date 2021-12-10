@@ -1,11 +1,11 @@
 package com.example.noinstagram.model
 
 data class Post(
-    val id: Int,
-    val image: String,
-    val user: UserModel,
-    val isLiked: Boolean = false,
-    val likesCount: Int,
-    val commentsCount: Int,
-    val timeStamp: Long
+    var id: String? = null,
+    val image: String? = null,
+    val user: UserModel? = null,
+    val isLiked: Boolean? = false,
+    val likesCount: Int? = null,
+    val commentsCount: Int? = null,
+    val timeStamp: Long? = null
 )

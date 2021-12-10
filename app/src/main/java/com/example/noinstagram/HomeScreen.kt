@@ -50,7 +50,7 @@ fun HomeScreenUi(scope: CoroutineScope) {
             Post(post,
                 onLikeToggle = {
                     scope.launch {
-                        PostsRepository.toggleLike(post.id)
+                        PostsRepository.toggleLike(post.id!!)
                     }
                 }
             )

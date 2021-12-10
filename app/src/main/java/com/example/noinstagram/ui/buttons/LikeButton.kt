@@ -80,8 +80,8 @@ fun AnimLikeButton(
             }, label = ""
         ) { state ->
             when (state) {
-                LikeAnimationState.Initial -> if (post.isLiked) endColor else startColor
-                else -> if (post.isLiked.not()) startColor else endColor
+                LikeAnimationState.Initial -> if (post.isLiked!!) endColor else startColor
+                else -> if (post.isLiked!!.not()) startColor else endColor
             }
         }
 
@@ -103,7 +103,7 @@ fun AnimLikeButton(
             }
         }
 
-        likeIconRes = if (post.isLiked) {
+        likeIconRes = if (post.isLiked!!) {
             com.example.noinstagram.R.drawable.ic_filled_favorite
         } else {
             com.example.noinstagram.R.drawable.ic_filled_favorite_gray
@@ -122,12 +122,13 @@ fun AnimLikeButton(
 private fun LikeButtonPreview() {
     AnimLikeButton(
         post = Post(
-            id = 1,
+            id = "0",
             image = "https://source.unsplash.com/random/400x300",
             user = UserModel(
                 email = "K@c.com",
                 displayName = "Kamil"
             ),
+            isLiked = false,
             likesCount = 100,
             commentsCount = 20,
             timeStamp = System.currentTimeMillis() - (60000)
