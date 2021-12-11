@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.ui.theme.NoInstagramTheme
 import com.example.noinstagram.utils.database.UserHandler
 import com.example.noinstagram.viewmodel.AuthViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 
 class MainActivity : ComponentActivity() {
@@ -24,7 +25,11 @@ class MainActivity : ComponentActivity() {
             NoInstagramTheme {
                 val navController = rememberNavController()
 
-                NavHost(navController, "FirstPage") {
+                NavHost(
+                    navController,
+                    if (FirebaseAuth.getInstance().currentUser != null) "HomePage" else "FirstPage"
+                )
+                {
                     composable("FirstPage") {
                         FirstPage(navController, authViewModel)
                     }
