@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.model.Post
+import com.example.noinstagram.ui.components.PostView
 import com.example.noinstagram.utils.Navigation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

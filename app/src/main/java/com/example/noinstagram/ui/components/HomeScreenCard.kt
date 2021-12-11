@@ -1,4 +1,4 @@
-package com.example.noinstagram
+package com.example.noinstagram.ui.components
 
 import android.text.format.DateUtils
 import androidx.compose.foundation.Image
@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
+import com.example.noinstagram.R
 import com.example.noinstagram.model.Post
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.buttons.AnimLikeButton
