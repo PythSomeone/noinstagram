@@ -40,13 +40,14 @@ import kotlin.math.sin
 @Composable
 fun PostView(
     post: Post,
-    onLikeToggle: (Post) -> Unit
+    onLikeToggle: (Post) -> Unit,
+    user: UserModel
 ) {
     Column {
         var offset by remember { mutableStateOf(Offset.Zero) }
         var zoom by remember { mutableStateOf(1f) }
         var angle by remember { mutableStateOf(0f) }
-        PostHeader(post)
+        PostHeader(user)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -100,7 +101,7 @@ fun Offset.rotateBy(angle: Float): Offset {
 }
 
 @Composable
-private fun PostHeader(post: Post) {
+private fun PostHeader(user: UserModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -123,7 +124,7 @@ private fun PostHeader(post: Post) {
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
-            Text(text = post.user.displayName!!, style = MaterialTheme.typography.subtitle2)
+            Text(text = user.displayName!!, style = MaterialTheme.typography.subtitle2)
         }
         Icon(Icons.Filled.MoreVert, "")
     }
@@ -236,5 +237,7 @@ fun PostViewPreview() {
             likesCount = 3,
             commentsCount = 2,
             timeStamp = 100
-        ), onLikeToggle = {})
+        ), onLikeToggle = {},
+        user = UserModel("")
+    )
 }

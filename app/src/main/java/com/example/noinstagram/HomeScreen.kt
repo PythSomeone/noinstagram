@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.model.Post
+import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.components.PostView
 import com.example.noinstagram.utils.Navigation
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -27,7 +28,7 @@ import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @Composable
-fun HomeScreen() {
+fun HomeScreen(user: UserModel) {
     val navController = rememberNavController()
     val scaffoldState = rememberScaffoldState()
     Scaffold(
@@ -41,13 +42,13 @@ fun HomeScreen() {
         bottomBar = { BottomNavigationBar(navController) },
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            Navigation(navController = navController)
+            Navigation(navController = navController, user)
         }
     }
 }
 
 @Composable
-fun HomeScreenUi(scope: CoroutineScope) {
+fun HomeScreenUi(scope: CoroutineScope, user: UserModel) {
     val posts by PostsRepository.posts
     var refreshing by remember { mutableStateOf(false) }
     //refresh
@@ -70,12 +71,14 @@ fun HomeScreenUi(scope: CoroutineScope) {
     ) {
         LazyColumn(modifier = Modifier.padding(top = 10.dp)) {
             itemsIndexed(posts) { _, post ->
-                Post(post,
+                Post(
+                    post,
                     onLikeToggle = {
                         scope.launch {
                             PostsRepository.toggleLike(post.id)
                         }
-                    }
+                    },
+                    user
                 )
                 Spacer(modifier = Modifier.height(10.dp))
             }
@@ -87,7 +90,8 @@ fun HomeScreenUi(scope: CoroutineScope) {
 @Composable
 private fun Post(
     post: Post,
-    onLikeToggle: (Post) -> Unit
+    onLikeToggle: (Post) -> Unit,
+    user: UserModel
 ) {
-    PostView(post, onLikeToggle)
+    PostView(post, onLikeToggle, user)
 }

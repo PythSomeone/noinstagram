@@ -10,7 +10,7 @@ import com.example.noinstagram.ExploreScreen
 import com.example.noinstagram.HomeScreenUi
 import com.example.noinstagram.R
 import com.example.noinstagram.UserProfileScreen
-import com.example.noinstagram.data.UsersRepository
+import com.example.noinstagram.model.UserModel
 
 
 sealed class NavigationItem(var route: String, var icon: Int, var title: String) {
@@ -23,10 +23,10 @@ sealed class NavigationItem(var route: String, var icon: Int, var title: String)
 
 @ExperimentalFoundationApi
 @Composable
-fun Navigation(navController: NavHostController) {
+fun Navigation(navController: NavHostController, user: UserModel) {
     NavHost(navController, startDestination = NavigationItem.Home.route) {
         composable(NavigationItem.Home.route) {
-            HomeScreenUi(scope = rememberCoroutineScope())
+            HomeScreenUi(scope = rememberCoroutineScope(), user)
         }
         composable(NavigationItem.Search.route) {
             ExploreScreen()
@@ -38,7 +38,7 @@ fun Navigation(navController: NavHostController) {
             //FollowersUi()
         }
         composable(NavigationItem.Profile.route) {
-            UserProfileScreen()
+            UserProfileScreen(user)
         }
     }
 }

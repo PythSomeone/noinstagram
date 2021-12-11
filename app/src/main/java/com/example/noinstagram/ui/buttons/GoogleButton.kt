@@ -24,6 +24,7 @@ import com.example.noinstagram.viewmodel.LoginViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 
 @Composable
@@ -35,8 +36,7 @@ fun GoogleButton(
     isLoading: Boolean = false,
     borderColor: Color = Color.LightGray,
     backgroundColor: Color = MaterialTheme.colors.surface,
-    progressIndicatorColor: Color = MaterialTheme.colors.primary,
-    onClick: () -> Unit
+    progressIndicatorColor: Color = MaterialTheme.colors.primary
 ) {
     val context = LocalContext.current
     val token = "612671903128-mit8lhckd4b4vdbs443p7vcf6vv9fk76.apps.googleusercontent.com"
@@ -67,7 +67,7 @@ fun GoogleButton(
 
                     val googleSignInClient = GoogleSignIn.getClient(context, gso)
                     launcher.launch(googleSignInClient.signInIntent)
-                    navController.navigate("HomePage")
+                    if (FirebaseAuth.getInstance().currentUser != null) navController.navigate("HomePage")
                 },
             )
             .width(250.dp),

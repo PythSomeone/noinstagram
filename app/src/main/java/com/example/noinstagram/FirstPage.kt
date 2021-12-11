@@ -1,6 +1,7 @@
 package com.example.noinstagram
 
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -32,6 +33,7 @@ import com.facebook.login.widget.LoginButton
 import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.launch
 
+@ExperimentalFoundationApi
 @Composable
 fun FirstPage(navController: NavController, authViewModel: AuthViewModel) {
     val coroutineScope = rememberCoroutineScope()
@@ -59,6 +61,9 @@ fun FirstPage(navController: NavController, authViewModel: AuthViewModel) {
             }
         }
 
+    user?.let {
+        HomeScreen(user = it)
+    }
 
     Surface(
         color = MaterialTheme.colors.primary,
@@ -83,7 +88,7 @@ fun FirstPageScreenContent(
     onClick: () -> Unit
 ) {
     val facebookLoginButton = LoginButton(LocalContext.current)
-    var isLoading by remember { mutableStateOf(false) }
+    val isLoading by remember { mutableStateOf(false) }
     var isFacebookLoading by remember { mutableStateOf(false) }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -100,15 +105,13 @@ fun FirstPageScreenContent(
                 facebookLoginButton.performClick()
             })
         Spacer(Modifier.height(30.dp))
-        GoogleButton(navController,
+        GoogleButton(
+            navController,
             text = "Sign in with Google",
             loadingText = "Signing in...",
             isLoading = isLoading,
-            icon = painterResource(id = R.drawable.ic_google_logo),
-            onClick = {
-                isLoading = true
-                onClick()
-            })
+            icon = painterResource(id = R.drawable.ic_google_logo)
+        )
         Spacer(Modifier.height(30.dp))
         LoginWithEmailButton(navController)
         Spacer(Modifier.height(30.dp))
@@ -139,6 +142,7 @@ fun FirstPageBackground() {
     )
 }
 
+@ExperimentalFoundationApi
 @Preview
 @Composable
 private fun FirstPagePreview() {
