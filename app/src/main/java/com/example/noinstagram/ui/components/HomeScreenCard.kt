@@ -4,6 +4,7 @@ import android.text.format.DateUtils
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -16,21 +17,31 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.input.pointer.consumePositionChange
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.model.Post
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.buttons.AnimLikeButton
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.roundToInt
+import kotlin.math.sin
 
 
 @Composable
@@ -39,6 +50,9 @@ fun PostView(
     onLikeToggle: (Post) -> Unit
 ) {
     Column {
+        var offset by remember { mutableStateOf(Offset.Zero) }
+        var zoom by remember { mutableStateOf(1f) }
+        var angle by remember { mutableStateOf(0f) }
         PostHeader(post)
         Box(
             modifier = Modifier
@@ -52,12 +66,43 @@ fun PostView(
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(10.dp))
+                    .clip(RectangleShape)
+                    .pointerInput(Unit) {
+                        detectTransformGestures(
+                            onGesture = { centroid, pan, gestureZoom, gestureRotate ->
+                                val oldScale = zoom
+                                val newScale = zoom * gestureZoom
+                                if (oldScale != newScale){
+                                offset = (offset + centroid / oldScale).rotateBy(gestureRotate) -
+                                        (centroid / newScale + pan / oldScale)
+                                zoom = newScale
+                                angle += gestureRotate
+                                }
+                            }
+                        )
+                    }
+                    .graphicsLayer {
+                        translationX = -offset.x * zoom
+                        translationY = -offset.y * zoom
+                        scaleX = zoom
+                        scaleY = zoom
+                        rotationZ = angle
+                        transformOrigin = TransformOrigin(0f, 0f)
+                    }
+
             )
         }
         PostFooter(post, onLikeToggle)
         Divider()
     }
+}
+
+fun Offset.rotateBy(angle: Float): Offset {
+    val angleInRadians = angle * PI / 180
+    return Offset(
+        (x * cos(angleInRadians) - y * sin(angleInRadians)).toFloat(),
+        (x * sin(angleInRadians) + y * cos(angleInRadians)).toFloat()
+    )
 }
 
 @Composable
