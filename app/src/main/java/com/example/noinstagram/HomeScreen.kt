@@ -93,5 +93,5 @@ private fun Post(
     onLikeToggle: (Post) -> Unit,
     user: UserModel
 ) {
-    PostView(post, onLikeToggle, user)
+    PostView(post, onLikeToggle)
 }

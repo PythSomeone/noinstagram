@@ -29,7 +29,9 @@ class MainActivity : ComponentActivity() {
                 val user = UserModel(userModel?.email, userModel?.displayName)
                 NavHost(
                     navController,
-                    if (FirebaseAuth.getInstance().currentUser != null) "HomePage" else "FirstPage"
+                    if (FirebaseAuth.getInstance().currentUser != null) {
+                        "HomePage"
+                    } else "FirstPage"
                 )
                 {
                     composable("FirstPage") {

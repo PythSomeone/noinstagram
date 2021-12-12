@@ -23,7 +23,7 @@ fun UserProfileScreen(user: UserModel) {
     Log.d("TAG", "$user")
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(4.dp))
-        ProfileSection(user)
+        ProfileSection()
         Spacer(modifier = Modifier.height(25.dp))
         //refresh
         LaunchedEffect(refreshing) {

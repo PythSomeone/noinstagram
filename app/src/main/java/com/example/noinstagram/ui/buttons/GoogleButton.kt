@@ -1,5 +1,6 @@
 package com.example.noinstagram.ui.buttons
 
+import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,12 +22,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.noinstagram.model.UserModel
+import com.example.noinstagram.utils.database.UserHandler
 import com.example.noinstagram.viewmodel.LoginViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun GoogleButton(
@@ -38,6 +44,7 @@ fun GoogleButton(
     backgroundColor: Color = MaterialTheme.colors.surface,
     progressIndicatorColor: Color = MaterialTheme.colors.primary
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val token = "612671903128-mit8lhckd4b4vdbs443p7vcf6vv9fk76.apps.googleusercontent.com"
     val viewModel: LoginViewModel = viewModel()
@@ -49,6 +56,17 @@ fun GoogleButton(
                 val account = task.getResult(ApiException::class.java)!!
                 val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
                 viewModel.signWithCredential(credential)
+                coroutineScope.launch {
+                    delay(2000)
+                    val userModel = FirebaseAuth.getInstance().currentUser
+                    if (userModel != null) {
+                        UserHandler.setUser(
+                            UserModel(userModel.email, userModel.displayName),
+                            userModel.uid
+                        )
+                        navController.navigate("HomePage")
+                    } else Log.d(TAG, "wtf?")
+                }
             } catch (e: ApiException) {
                 Log.w("TAG", "Google sign in failed", e)
             }
@@ -67,7 +85,6 @@ fun GoogleButton(
 
                     val googleSignInClient = GoogleSignIn.getClient(context, gso)
                     launcher.launch(googleSignInClient.signInIntent)
-                    if (FirebaseAuth.getInstance().currentUser != null) navController.navigate("HomePage")
                 },
             )
             .width(250.dp),

@@ -1,5 +1,7 @@
 package com.example.noinstagram
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -63,6 +65,7 @@ fun FirstPage(navController: NavController, authViewModel: AuthViewModel) {
 
     user?.let {
         HomeScreen(user = it)
+        Log.d(TAG, "dsa")
     }
 
     Surface(

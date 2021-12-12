@@ -32,6 +32,7 @@ import com.example.noinstagram.R
 import com.example.noinstagram.model.Post
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.buttons.AnimLikeButton
+import com.google.firebase.auth.FirebaseAuth
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -40,9 +41,12 @@ import kotlin.math.sin
 @Composable
 fun PostView(
     post: Post,
-    onLikeToggle: (Post) -> Unit,
-    user: UserModel
+    onLikeToggle: (Post) -> Unit
 ) {
+    val user = UserModel(
+        FirebaseAuth.getInstance().currentUser?.email,
+        FirebaseAuth.getInstance().currentUser?.displayName
+    )
     Column {
         var offset by remember { mutableStateOf(Offset.Zero) }
         var zoom by remember { mutableStateOf(1f) }
@@ -237,7 +241,6 @@ fun PostViewPreview() {
             likesCount = 3,
             commentsCount = 2,
             timeStamp = 100
-        ), onLikeToggle = {},
-        user = UserModel("")
+        ), onLikeToggle = {}
     )
 }

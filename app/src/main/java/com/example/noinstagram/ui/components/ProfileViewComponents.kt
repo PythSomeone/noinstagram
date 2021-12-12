@@ -14,6 +14,7 @@ import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,15 +27,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.data.PostsRepository
+import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.model.Post
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.theme.EditProfileButtonColor
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ktx.getValue
 
 @Composable
 fun ProfileSection(
-    userModel: UserModel,
     modifier: Modifier = Modifier
 ) {
+    val userModel = FirebaseAuth.getInstance().currentUser
+    val userState = remember {
+        UsersRepository
+    }
+    var user = UserModel()
+    userState.userSnapshots.value.forEach(action = {
+        if (it.key == userModel?.uid)
+            user = it.getValue<UserModel>()!!
+    })
     val minWidth = 95.dp
     val height = 30.dp
     Column(modifier = modifier.fillMaxWidth()) {
@@ -62,8 +74,8 @@ fun ProfileSection(
         ) {
             Column(modifier = Modifier.weight(2f)) {
                 ProfileDescription(
-                    displayName = userModel?.displayName!!,
-                    description = userModel?.description!!
+                    displayName = user.displayName!!,
+                    description = user.description!!
                 )
             }
             Column(
