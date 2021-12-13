@@ -1,9 +1,9 @@
 package com.example.noinstagram.data
 
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import com.example.noinstagram.model.UserModel
+import com.example.noinstagram.utils.database.UserHandler
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ktx.getValue
@@ -11,48 +11,98 @@ import com.google.firebase.ktx.Firebase
 
 object UsersRepository {
 
-    private val _userSnapshots = mutableStateOf<List<DataSnapshot>>(emptyList())
-    val userSnapshots: State<List<DataSnapshot>> = _userSnapshots
+    private val _users = mutableStateOf<List<UserModel>>(emptyList())
+    val users: State<List<UserModel>> = _users
 
-    fun addSnapshot(snapshot: DataSnapshot) {
-        val userSnapshots = createArray()
-        userSnapshots.add(snapshot)
-        _userSnapshots.value = userSnapshots
+    fun addUser(snapshot: DataSnapshot) {
+        val users = listToArray()
+        users.add(snapshot.getValue<UserModel>() as UserModel)
+        _users.value = users
     }
-    fun changeSnapshot(snapshot: DataSnapshot) {
-        var userSnapshots = createArray()
-        userSnapshots.forEachIndexed { index, dataSnapshot ->
-            if (dataSnapshot.key == snapshot.key)
-                userSnapshots[index] = snapshot
+    fun changeUser(snapshot: DataSnapshot) {
+        var users = listToArray()
+        users.forEachIndexed { index, user ->
+            if (user.id == snapshot.key)
+                users[index] = snapshot.getValue<UserModel>() as UserModel
         }
-        _userSnapshots.value = userSnapshots
+        _users.value = users
     }
-    fun removeSnapshot(snapshot: DataSnapshot) {
-        var userSnapshots = createArray()
-        userSnapshots.forEachIndexed { index, dataSnapshot ->
-            if (dataSnapshot.key == snapshot.key)
-                userSnapshots.removeAt(index)
+    fun removeUser(snapshot: DataSnapshot) {
+        var users = listToArray()
+        users.forEachIndexed { index, user ->
+            if (user.id == snapshot.key)
+                users.removeAt(index)
         }
-        _userSnapshots.value = userSnapshots
+        _users.value = users
     }
-
-    fun getCurrentUser(): UserModel {
-        val currentUserUID = Firebase.auth.currentUser?.uid
-        if (currentUserUID != null) {
-            userSnapshots.value.forEach(action = {
-                if (it.key == currentUserUID)
-                    return it.getValue<UserModel>() as UserModel
-            })
-        }
-        return UserModel()
-    }
-
-    private fun createArray(): ArrayList<DataSnapshot> {
-        val userSnapshots = ArrayList<DataSnapshot>()
-        _userSnapshots.value.forEach(action = {
+    private fun listToArray(): ArrayList<UserModel> {
+        val userSnapshots = ArrayList<UserModel>()
+        _users.value.forEach(action = {
             userSnapshots.add(it)
         })
         return userSnapshots
+    }
+
+    fun followUser(uid: String) {
+        var we = Firebase.auth.currentUser?.uid?.let { getUser(it) }
+        var them = getUser(uid)
+
+        if (we != null && them != null) {
+            if (!userIsFollowed(them?.id!!))
+            {
+                we.following.add(them.id)
+                them.followers.add(we.id)
+            }
+            else
+            {
+                we.following.remove(them.id)
+                them.followers.remove(we.id)
+            }
+            // Send snapshots to database
+            UserHandler.setUser(we, we.id!!)
+            UserHandler.setUser(them, them.id!!)
+        }
+    }
+    fun getFollowers(uid: String): MutableList<UserModel> {
+        val followers: MutableList<UserModel> = mutableListOf()
+        getUser(uid)?.followers?.forEach(action = {
+            if (it != null) {
+                val follower = getUser(it)!!
+                if (follower != null) {
+                    followers.add(follower)
+                }
+            }
+        })
+        return followers
+    }
+    fun getFollowing(uid: String): MutableList<UserModel> {
+        val followers: MutableList<UserModel> = mutableListOf()
+        getUser(uid)?.following?.forEach(action = {
+            if (it != null) {
+                val follower = getUser(it)!!
+                if (follower != null) {
+                    followers.add(follower)
+                }
+            }
+        })
+        return followers
+    }
+    private fun userIsFollowed(uid: String): Boolean {
+        val currentUser = Firebase.auth.currentUser?.uid
+        if (currentUser != null) {
+            getUser(currentUser)?.following?.forEach(action = {
+                if (it == uid) return true
+            })
+        }
+        return false
+    }
+
+    fun getUser(uid: String): UserModel? {
+        users.value.forEach(action = {
+            if (it.id == uid)
+                return it
+        })
+        return null
     }
 
 }

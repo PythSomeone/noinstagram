@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,9 +21,9 @@ fun UserProfileScreen() {
         UsersRepository
     }
     var user = UserModel()
-    userState.userSnapshots.value.forEach(action = {
-        if (it.key == "123")
-            user = it.getValue<UserModel>()!!
+    userState.users.value.forEach(action = {
+        if (it.id == "123")
+            user = it
     })
     Log.d("TAG", "$user")
     Column(modifier = Modifier.fillMaxSize()) {
