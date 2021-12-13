@@ -1,5 +1,6 @@
 package com.example.noinstagram.data
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.example.noinstagram.model.UserModel
@@ -16,7 +17,13 @@ object UsersRepository {
 
     fun addUser(snapshot: DataSnapshot) {
         val users = listToArray()
-        users.add(snapshot.getValue<UserModel>() as UserModel)
+        if (snapshot.getValue<UserModel>()?.id == null) {
+            val newValue = snapshot.getValue<UserModel>()
+            newValue?.id = snapshot.key
+            users.add(newValue!!)
+        }
+        else
+            users.add(snapshot.getValue<UserModel>() as UserModel)
         _users.value = users
     }
     fun changeUser(snapshot: DataSnapshot) {
