@@ -1,10 +1,14 @@
 package com.example.noinstagram.data
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.example.noinstagram.model.Post
+import com.example.noinstagram.utils.database.PostHandler
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ktx.getValue
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -44,32 +48,24 @@ object PostsRepository {
     }
 
     suspend fun toggleLike(postId: String) {
-        updateLike(postId, true)
-    }
-
-    suspend fun performLike(postId: String) {
-        updateLike(postId, false)
+        updateLike(postId)
     }
 
     private suspend fun updateLike(
-        postId: String,
-        isToggle: Boolean
+        postId: String
     ) {
         withContext(Dispatchers.IO) {
             val posts = _posts.value.toMutableList()
             for ((index, value) in posts.withIndex()) {
                 if (value.id == postId) {
-
-                    val isLiked = if (isToggle) !value.isLiked!! else true
-
-                    // check if isLiked is same as previous state
-                    if (isLiked != value.isLiked) {
-                        val likesCount =
-                            if (isLiked) value.likesCount!!.plus(1) else value.likesCount!!.minus(1)
-
-                        posts[index] = value.copy(isLiked = isLiked, likesCount = likesCount)
+                    if (postIsLiked(postId).not()) {
+                        posts[index].userLikes.add(Firebase.auth.currentUser?.uid!!)
+                        Log.d("TAG", "Added ${posts[index]}")
+                    } else {
+                        posts[index].userLikes.remove(Firebase.auth.currentUser?.uid!!)
+                        Log.d("TAG", "Deleted ${posts[index]}")
                     }
-
+                    PostHandler.updatePost(posts[index])
                     break
                 }
             }
@@ -77,4 +73,16 @@ object PostsRepository {
         }
     }
 
+    fun getPost(postId: String): Post? {
+        posts.value.forEach { post ->
+            if (post.id == postId)
+                return post
+        }
+        return null
+    }
+
+}
+
+fun postIsLiked(postId: String): Boolean {
+    return PostsRepository.getPost(postId)?.userLikes?.contains(Firebase.auth.currentUser?.uid)!!
 }

@@ -1,9 +1,9 @@
 package com.example.noinstagram.utils.database
 
 import android.content.ContentValues
-import android.content.ContentValues.TAG
 import android.util.Log
 import com.example.noinstagram.data.PostsRepository
+import com.example.noinstagram.model.CommentModel
 import com.example.noinstagram.model.Post
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
@@ -19,13 +19,26 @@ object PostHandler {
 
     fun setPost(post: Post) {
         val newRef = ref().push()
-        val postWithKey = post
-        Log.d(TAG, newRef.key.toString())
-        postWithKey.id = newRef.key
+        post.id = newRef.key
         newRef
-            .setValue(postWithKey)
+            .setValue(post)
             .addOnSuccessListener {
-                Log.d(ContentValues.TAG, "Successfully added $postWithKey to database")
+                Log.d(ContentValues.TAG, "Successfully added $post to database")
+            }
+            .addOnFailureListener {
+                Log.d(ContentValues.TAG, "Something went wrong setting post to database", it)
+            }
+    }
+
+    fun updatePost(post: Post, comment: CommentModel? = null) {
+        if (comment != null) {
+            comment.id = post.comments.lastIndex.plus(1).toString()
+            post.comments.add(comment)
+        }
+        ref(post.id)
+            .setValue(post)
+            .addOnSuccessListener {
+                Log.d(ContentValues.TAG, "Successfully updated $post in database")
             }
             .addOnFailureListener {
                 Log.d(ContentValues.TAG, "Something went wrong setting post to database", it)

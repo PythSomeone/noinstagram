@@ -1,10 +1,8 @@
 package com.example.noinstagram.model
 
 data class CommentModel(
-    var id: String? = "",
+    var id: String? = null,
     val text: String? = "",
-    val User: UserModel? = UserModel(),
-    val isLiked: Boolean? = false,
-    val likesCount: Int? = null,
+    val user: UserModel? = UserModel(),
     val timeStamp: Long? = null
 )

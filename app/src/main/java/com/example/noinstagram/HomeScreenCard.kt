@@ -135,12 +135,12 @@ private fun PostFooterTextSection(post: Post) {
         )
     ) {
         Text(
-            "${post.likesCount} likes",
+            "${post.userLikes.count()} likes",
             style = MaterialTheme.typography.subtitle2
         )
 
         Text(
-            "View all ${post.commentsCount} comments",
+            "View all ${post.comments.count()} comments",
             style = MaterialTheme.typography.caption
         )
 
@@ -193,9 +193,6 @@ fun PostViewPreview() {
             id = "0",
             image = "",
             user = UserModel(email = "abc", displayName = "kamil"),
-            isLiked = true,
-            likesCount = 3,
-            commentsCount = 2,
             timeStamp = 100
         ), onLikeToggle = {})
 }
