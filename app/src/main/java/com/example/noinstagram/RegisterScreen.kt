@@ -21,14 +21,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.noinstagram.ui.buttons.LoginWithEmailButton
 import com.example.noinstagram.ui.canva.NoInstagramCanvas
-import com.example.noinstagram.utils.LoadingState
-import com.example.noinstagram.viewmodel.AuthViewModel
-import com.example.noinstagram.viewmodel.LoginViewModel
 import com.example.noinstagram.viewmodel.RegisterViewModel
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+
 
 
 @Composable
@@ -156,7 +151,7 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                         .width(300.dp)
                         .alpha(0.4f),
                     content = {
-                        Text(text = "Login")
+                        Text(text = "Register")
                     },
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
                 )
@@ -192,7 +187,7 @@ fun RegisterScreenPreview() {
 @Composable
 fun RegisterAccountTextBox() {
     Text(
-        text = "Login to your account",
+        text = "Register your account",
         fontSize = 20.sp,
         color = Color.White,
         fontFamily = FontFamily(Font(R.font.verdana))
