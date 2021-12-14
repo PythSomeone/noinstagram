@@ -70,7 +70,6 @@ fun FirstPage(navController: NavController, authViewModel: AuthViewModel) {
 
         FirstPageScreenContent(
             navController,
-            errorText = text,
             onClick = {
                 text = null
                 authResultLauncher.launch(signInRequestCode)
@@ -81,7 +80,6 @@ fun FirstPage(navController: NavController, authViewModel: AuthViewModel) {
 @Composable
 fun FirstPageScreenContent(
     navController: NavController,
-    errorText: String?,
     onClick: () -> Unit
 ) {
     val facebookLoginButton = LoginButton(LocalContext.current)
