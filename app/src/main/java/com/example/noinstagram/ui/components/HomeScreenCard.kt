@@ -123,7 +123,7 @@ private fun PostHeader(post: Post) {
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
-            Text(text = post.user.displayName!!, style = MaterialTheme.typography.subtitle2)
+            Text(text = post.user!!.displayName!!, style = MaterialTheme.typography.subtitle2)
         }
         Icon(Icons.Filled.MoreVert, "")
     }
@@ -174,19 +174,19 @@ private fun PostFooterTextSection(post: Post) {
         )
     ) {
         Text(
-            "${post.likesCount} likes",
+            "${post.userLikes.count()} likes",
             style = MaterialTheme.typography.subtitle2
         )
 
         Text(
-            "View all ${post.commentsCount} comments",
+            "View all ${post.comments.count()} comments",
             style = MaterialTheme.typography.caption
         )
 
         Spacer(modifier = Modifier.height(2.dp))
 
         Text(
-            post.timeStamp.getTimeElapsedText(),
+            post.timeStamp!!.getTimeElapsedText(),
             style = MaterialTheme.typography.caption.copy(fontSize = 10.sp)
         )
     }
@@ -229,12 +229,9 @@ fun PostIconButton(
 fun PostViewPreview() {
     PostView(
         post = Post(
-            id = 0,
+            id = "0",
             image = "",
             user = UserModel(email = "abc", displayName = "kamil"),
-            isLiked = true,
-            likesCount = 3,
-            commentsCount = 2,
             timeStamp = 100
         ), onLikeToggle = {})
 }

@@ -24,11 +24,9 @@ fun UserProfileScreen() {
         UsersRepository
     }
     var user = UserModel()
-    var refreshing by remember { mutableStateOf(false) }
-
-    userState.userSnapshots.value.forEach(action = {
-        if (it.key == "123")
-            user = it.getValue<UserModel>()!!
+    userState.users.value.forEach(action = {
+        if (it.id == "123")
+            user = it
     })
     Log.d("TAG", "$user")
     Column(modifier = Modifier.fillMaxSize()) {
