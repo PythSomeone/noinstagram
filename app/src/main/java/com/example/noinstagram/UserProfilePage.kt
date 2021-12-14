@@ -24,6 +24,7 @@ fun UserProfileScreen() {
         UsersRepository
     }
     var user = UserModel()
+    var refreshing by remember { mutableStateOf(false) }
     userState.users.value.forEach(action = {
         if (it.id == "123")
             user = it
