@@ -70,7 +70,6 @@ fun FirstPage(navController: NavController, authViewModel: AuthViewModel) {
 
         FirstPageScreenContent(
             navController,
-            errorText = text,
             onClick = {
                 text = null
                 authResultLauncher.launch(signInRequestCode)
@@ -81,7 +80,6 @@ fun FirstPage(navController: NavController, authViewModel: AuthViewModel) {
 @Composable
 fun FirstPageScreenContent(
     navController: NavController,
-    errorText: String?,
     onClick: () -> Unit
 ) {
     val facebookLoginButton = LoginButton(LocalContext.current)
@@ -102,7 +100,8 @@ fun FirstPageScreenContent(
                 facebookLoginButton.performClick()
             })
         Spacer(Modifier.height(30.dp))
-        GoogleButton(text = "Sign in with Google",
+        GoogleButton(navController,
+            text = "Sign in with Google",
             loadingText = "Signing in...",
             isLoading = isLoading,
             icon = painterResource(id = R.drawable.ic_google_logo),
@@ -119,7 +118,7 @@ fun FirstPageScreenContent(
 
 @Composable
 fun SignUpTextBox(navController: NavController) {
-    TextButton(onClick = { navController.navigate("RegisterPage") }) {
+    TextButton(onClick = { }) {
         Text(
             text = "Sign up",
             fontSize = 16.sp,
