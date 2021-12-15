@@ -1,5 +1,13 @@
 package com.example.noinstagram.ui.components
 
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -18,26 +26,44 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.R
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.model.Post
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.theme.EditProfileButtonColor
+import com.example.noinstagram.viewmodel.PostViewModel
+import java.util.Objects.isNull
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun AddPostSection(
-    modifier: Modifier = Modifier
+    user: UserModel,
+    modifier: Modifier = Modifier,
+    viewModel: PostViewModel = viewModel(),
 ) {
     var description by remember { mutableStateOf("") }
-    var image by remember { mutableStateOf("") }
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val bitmap =  remember {
+        mutableStateOf<Bitmap?>(null)
+    }
+    val launcher = rememberLauncherForActivityResult(contract =
+    ActivityResultContracts.GetContent()) { uri: Uri? ->
+        imageUri = uri
+    }
+    val context = LocalContext.current
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -57,19 +83,37 @@ fun AddPostSection(
 
                 Spacer(Modifier.height(20.dp))
 
-                Image(
-                    painter = rememberImagePainter("https://at-cdn-s01.audiotool.com/2014/01/09/documents/fat_man-Nr9zr8X/3/cover256x256-e416a9b1d3fe413d9120ca7285b3b748.jpg"),
-                    contentDescription = "loaded image",
-                    modifier = Modifier
-                        .height(200.dp)
-                        .fillMaxWidth(),
-                )
+//                Image(
+//                    painter = rememberImagePainter("https://at-cdn-s01.audiotool.com/2014/01/09/documents/fat_man-Nr9zr8X/3/cover256x256-e416a9b1d3fe413d9120ca7285b3b748.jpg"),
+//                    contentDescription = "loaded image",
+//                    modifier = Modifier
+//                        .height(200.dp)
+//                        .fillMaxWidth(),
+//                )
+
+                imageUri?.let {
+                    if (Build.VERSION.SDK_INT < 28) {
+                        bitmap.value = MediaStore.Images
+                            .Media.getBitmap(context.contentResolver,it)
+
+                    } else {
+                        val source = ImageDecoder
+                            .createSource(context.contentResolver,it)
+                        bitmap.value = ImageDecoder.decodeBitmap(source)
+                    }
+
+                    bitmap.value?.let {  btm ->
+                        Image(bitmap = btm.asImageBitmap(),
+                            contentDescription =null,
+                            modifier = Modifier.size(400.dp))
+                    }
+                }
 
                 Spacer(Modifier.height(20.dp))
 
                 Button(
                     onClick = {
-                        //TO DO//
+                        launcher.launch("image/*")
                     },
                     shape = RoundedCornerShape(6.dp),
                     modifier = Modifier
@@ -110,9 +154,9 @@ fun AddPostSection(
                 Spacer(Modifier.height(20.dp))
 
                 Button(
-//                    enabled = description.isNotEmpty(),
+                    enabled= imageUri.toString().isNotEmpty(),
                     onClick = {
-                        //TO DO //
+                        viewModel.uploadImage(imageUri.toString(), user)
                     },
                     shape = RoundedCornerShape(6.dp),
                     modifier = Modifier

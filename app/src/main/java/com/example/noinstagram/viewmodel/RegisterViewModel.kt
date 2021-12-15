@@ -6,8 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.utils.LoadingState
 import com.example.noinstagram.utils.database.UserHandler
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.MutableStateFlow

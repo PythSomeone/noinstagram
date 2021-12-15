@@ -1,5 +1,6 @@
 package com.example.noinstagram
 
+import android.util.Log
 import android.view.Surface
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
@@ -46,6 +47,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
+import com.example.noinstagram.data.UsersRepository
+import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.canva.NoInstagramCanvas
 import com.example.noinstagram.ui.components.*
 import com.example.noinstagram.ui.components.ProfileSection
@@ -53,10 +56,24 @@ import com.example.noinstagram.ui.components.ProfileSection
 @ExperimentalFoundationApi
 @Composable
 fun AddPostScreen() {
-
+    val userState = remember {
+        UsersRepository
+    }
+    var user = UserModel()
+    userState.users.value.forEach(action = {
+        Log.d("TAG", "$it")
+        if (it.id == "111") {
+            user = it
+            Log.d("TAG", "To jest ten user")
+            Log.d("TAG", "$user")
+        }
+    })
+    Log.d("TAG", "Wybrany user")
+    Log.d("TAG", "$user")
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(4.dp))
-        AddPostSection()
+
+        AddPostSection(user)
         Spacer(modifier = Modifier.height(25.dp))
         //refresh
     }
