@@ -41,10 +41,12 @@ import com.example.noinstagram.R
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.model.Post
 import com.example.noinstagram.model.UserModel
-import com.example.noinstagram.ui.theme.EditProfileButtonColor
+import com.example.noinstagram.ui.theme.AddPostButtonColor
+import com.example.noinstagram.ui.theme.ChoosePhotoButtonColor
 import com.example.noinstagram.viewmodel.PostViewModel
 import java.util.Objects.isNull
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.noinstagram.utils.NavigationItem
 
 @Composable
 fun AddPostSection(
@@ -83,31 +85,31 @@ fun AddPostSection(
 
                 Spacer(Modifier.height(20.dp))
 
-//                Image(
-//                    painter = rememberImagePainter("https://at-cdn-s01.audiotool.com/2014/01/09/documents/fat_man-Nr9zr8X/3/cover256x256-e416a9b1d3fe413d9120ca7285b3b748.jpg"),
-//                    contentDescription = "loaded image",
-//                    modifier = Modifier
-//                        .height(200.dp)
-//                        .fillMaxWidth(),
-//                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    content = {
+                        imageUri?.let {
+                            if (Build.VERSION.SDK_INT < 28) {
+                                bitmap.value = MediaStore.Images
+                                    .Media.getBitmap(context.contentResolver,it)
 
-                imageUri?.let {
-                    if (Build.VERSION.SDK_INT < 28) {
-                        bitmap.value = MediaStore.Images
-                            .Media.getBitmap(context.contentResolver,it)
-
-                    } else {
-                        val source = ImageDecoder
-                            .createSource(context.contentResolver,it)
-                        bitmap.value = ImageDecoder.decodeBitmap(source)
+                            } else {
+                                val source = ImageDecoder
+                                    .createSource(context.contentResolver,it)
+                                bitmap.value = ImageDecoder.decodeBitmap(source)
+                            }
+                            bitmap.value?.let {  btm ->
+                                Image(bitmap = btm.asImageBitmap(),
+                                    contentDescription =null,
+                                    modifier = Modifier.size(400.dp))
+                            }
+                        }
                     }
+                )
 
-                    bitmap.value?.let {  btm ->
-                        Image(bitmap = btm.asImageBitmap(),
-                            contentDescription =null,
-                            modifier = Modifier.size(400.dp))
-                    }
-                }
 
                 Spacer(Modifier.height(20.dp))
 
@@ -124,7 +126,7 @@ fun AddPostSection(
                             color = Color.White
                         )
                     },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Blue)
+                    colors = ButtonDefaults.buttonColors(backgroundColor = ChoosePhotoButtonColor)
                 )
 
                 Spacer(Modifier.height(20.dp))
@@ -167,7 +169,7 @@ fun AddPostSection(
                             color = Color.White,
                         )
                     },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Blue)
+                    colors = ButtonDefaults.buttonColors(backgroundColor = AddPostButtonColor)
                 )
 
 
