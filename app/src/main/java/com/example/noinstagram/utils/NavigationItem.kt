@@ -6,10 +6,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.noinstagram.ExploreScreen
-import com.example.noinstagram.HomeScreenUi
-import com.example.noinstagram.R
-import com.example.noinstagram.UserProfileScreen
+import com.example.noinstagram.*
 import com.example.noinstagram.data.UsersRepository
 
 
@@ -33,6 +30,7 @@ fun Navigation(navController: NavHostController) {
         }
         composable(NavigationItem.AddPost.route) {
             //AddPostUi()
+            AddPostScreen()
         }
         composable(NavigationItem.Followers.route) {
             //FollowersUi()
