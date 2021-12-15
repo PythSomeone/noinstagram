@@ -61,14 +61,10 @@ fun AddPostScreen() {
     }
     var user = UserModel()
     userState.users.value.forEach(action = {
-        Log.d("TAG", "$it")
         if (it.id == "111") {
             user = it
-            Log.d("TAG", "To jest ten user")
-            Log.d("TAG", "$user")
         }
     })
-    Log.d("TAG", "Wybrany user")
     Log.d("TAG", "$user")
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(4.dp))
