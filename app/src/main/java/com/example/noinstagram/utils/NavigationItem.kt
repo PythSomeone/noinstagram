@@ -38,5 +38,8 @@ fun Navigation(navController: NavHostController) {
         composable(NavigationItem.Profile.route) {
             UserProfileScreen()
         }
+        composable("Edit screen") {
+            EditProfileScreen(navController)
+        }
     }
 }
