@@ -3,11 +3,13 @@ package com.example.noinstagram.utils.database
 import android.content.ContentValues.TAG
 import android.util.Log
 import com.example.noinstagram.data.UsersRepository
+import com.example.noinstagram.model.Post
 import com.example.noinstagram.model.UserModel
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import java.io.File
 
 
 object UserHandler {
@@ -15,8 +17,8 @@ object UserHandler {
     private val database = Firebase.database("https://noinstagram-e6c32-default-rtdb.europe-west1.firebasedatabase.app")
     private const val refName = "Users"
 
-    fun setUser(user: UserModel, uid: String) {
-        ref(uid).setValue(user)
+    fun setUser(user: UserModel) {
+        ref(user.id).setValue(user)
             .addOnSuccessListener {
                 Log.d(TAG, "Successfully added $user to database")
             }

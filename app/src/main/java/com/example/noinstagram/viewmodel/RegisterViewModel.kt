@@ -25,7 +25,7 @@ class RegisterViewModel : ViewModel() {
                     email = email,
                     displayName = username
                 )
-                accountHandler.setUser(user, uid)
+                accountHandler.setUser(user)
             }
             loadingState.emit(LoadingState.LOADED)
         } catch (e: Exception) {

@@ -6,47 +6,29 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import coil.compose.rememberImagePainter
-import com.example.noinstagram.R
-import com.example.noinstagram.data.PostsRepository
-import com.example.noinstagram.model.Post
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.theme.AddPostButtonColor
 import com.example.noinstagram.ui.theme.ChoosePhotoButtonColor
 import com.example.noinstagram.viewmodel.PostViewModel
-import java.util.Objects.isNull
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.noinstagram.utils.NavigationItem
+import java.io.File
+
 
 @Composable
 fun AddPostSection(
@@ -66,6 +48,9 @@ fun AddPostSection(
         imageUri = uri
     }
     val context = LocalContext.current
+    var file by remember {
+        mutableStateOf<File?>(null)
+    }
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -154,23 +139,35 @@ fun AddPostSection(
                 )
 
                 Spacer(Modifier.height(20.dp))
+                if(imageUri != null){
+                    Button(
+//                    enabled= imageUri.toString().isNotEmpty(),
 
-                Button(
-                    enabled= imageUri.toString().isNotEmpty(),
-                    onClick = {
-                        viewModel.uploadImage(imageUri.toString(), user)
-                    },
-                    shape = RoundedCornerShape(6.dp),
-                    modifier = Modifier
-                        .width(150.dp),
-                    content = {
-                        Text(
-                            text = "Add post",
-                            color = Color.White,
-                        )
-                    },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = AddPostButtonColor)
-                )
+//                        enabled=!Uri.EMPTY.equals(imageUri),
+                        onClick = {
+                            Toast.makeText(
+                                context,
+                                "Post added...",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Log.d("TAG", "$imageUri")
+                            viewModel.uploadImage(imageUri!!, description)
+                            imageUri = null
+
+                        },
+                        shape = RoundedCornerShape(6.dp),
+                        modifier = Modifier
+                            .width(150.dp),
+                        content = {
+                            Text(
+                                text = "Add post",
+                                color = Color.White,
+                            )
+                        },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = AddPostButtonColor)
+                    )
+                }
+
 
 
             }
