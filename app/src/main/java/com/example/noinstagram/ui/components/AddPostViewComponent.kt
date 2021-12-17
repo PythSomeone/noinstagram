@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -138,25 +139,35 @@ fun AddPostSection(
                 )
 
                 Spacer(Modifier.height(20.dp))
+                if(imageUri != null){
+                    Button(
+//                    enabled= imageUri.toString().isNotEmpty(),
 
-                Button(
-                    enabled= imageUri.toString().isNotEmpty(),
-                    onClick = {
-                        viewModel.uploadImage(imageUri!!, description)
-                        Log.d("TAG", "$imageUri")
+//                        enabled=!Uri.EMPTY.equals(imageUri),
+                        onClick = {
+                            Toast.makeText(
+                                context,
+                                "Post added...",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Log.d("TAG", "$imageUri")
+                            viewModel.uploadImage(imageUri!!, description)
+                            imageUri = null
 
-                    },
-                    shape = RoundedCornerShape(6.dp),
-                    modifier = Modifier
-                        .width(150.dp),
-                    content = {
-                        Text(
-                            text = "Add post",
-                            color = Color.White,
-                        )
-                    },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = AddPostButtonColor)
-                )
+                        },
+                        shape = RoundedCornerShape(6.dp),
+                        modifier = Modifier
+                            .width(150.dp),
+                        content = {
+                            Text(
+                                text = "Add post",
+                                color = Color.White,
+                            )
+                        },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = AddPostButtonColor)
+                    )
+                }
+
 
 
             }
