@@ -66,8 +66,8 @@ object UsersRepository {
                 them.followers.remove(we.id)
             }
             // Send snapshots to database
-            UserHandler.setUser(we, we.id!!)
-            UserHandler.setUser(them, them.id!!)
+            UserHandler.setUser(we)
+            UserHandler.setUser(them)
         }
     }
     fun getFollowers(uid: String): MutableList<UserModel> {
@@ -110,6 +110,14 @@ object UsersRepository {
                 return it
         })
         return null
+    }
+
+    fun getCurrentUser(): UserModel? {
+        val uid = Firebase.auth.currentUser?.uid
+        return if (uid != null) {
+            getUser(uid)
+        } else
+            null
     }
 
 }
