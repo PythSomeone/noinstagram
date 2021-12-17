@@ -9,55 +9,44 @@ import com.example.noinstagram.model.UserModel
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.tasks.await
 import java.io.File
 
 object StorageHandler {
 
+    enum class Folder {
+        PROFILE,
+        POST
+    }
     private val storage = Firebase.storage
     private val ref = storage.reference
 
-    fun uploadProfilePicture(file: File, user: UserModel) {
-        var uri = Uri.fromFile(file)
-        var riverRef = ref.child("Profile pictures/${user.id}")
+    // It will return download url for picture
+    suspend fun uploadPicture(file: File, folder: Folder): String {
+        var urlToFile = ""
+        val uri = Uri.fromFile(file)
+        val riverRef = ref.child("${folder.name}/${UsersRepository.getCurrentUser()?.id}/${uri.lastPathSegment}")
 
         riverRef.putFile(uri)
             .addOnSuccessListener {
-                riverRef.downloadUrl.addOnCompleteListener {
-                    user.photo = it.result.toString()
-                    UsersRepository.users.value.forEach( action = {
-                        if (it.id == user.id)
-                            UserHandler.setUser(user, user.id!!)
-                    })
-                }
                 Log.d(TAG, "$file was added")
-            }
+            }.await()
+        riverRef.downloadUrl.addOnCompleteListener {
+            urlToFile = it.result.toString()
+        }.await()
+        return urlToFile
     }
 
-    fun uploadPostPicture(file: File, post: Post) {
-        var uri = Uri.fromFile(file)
-        var riverRef = ref.child("Post pictures/${post.id}")
+    // Use in case that multiple pictures are needed
 
-        riverRef.putFile(uri)
-            .addOnSuccessListener {
-                riverRef.downloadUrl.addOnCompleteListener {
-                    post.image = it.result.toString()
-                    UsersRepository.users.value.forEach( action = {
-                        if (it.id == post.id)
-                            PostHandler.updatePost(post)
-                    })
-                }
-                Log.d(TAG, "$file was added")
-            }
-    }
-
-    fun clearPreviousUploads(ref: StorageReference) {
-        ref.listAll()
-            .addOnCompleteListener {
-                it.result.items.forEach( action = {
-                    it.delete()
-                    Log.d(TAG, "$it was deleted")
-                })
-            }
-    }
+//    fun clearPreviousUploads(ref: StorageReference) {
+//        ref.listAll()
+//            .addOnCompleteListener {
+//                it.result.items.forEach( action = {
+//                    it.delete()
+//                    Log.d(TAG, "$it was deleted")
+//                })
+//            }
+//    }
 
 }
