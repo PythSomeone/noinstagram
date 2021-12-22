@@ -81,7 +81,7 @@ object PostsRepository {
         return null
     }
 
-    fun getPostForUser(uid: String): List<Post> {
+    fun getPostsForUser(uid: String): List<Post> {
         val userPosts = ArrayList<Post>()
         posts.value.forEach(action = {
             if (it.id == uid)
