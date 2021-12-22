@@ -81,6 +81,15 @@ object PostsRepository {
         return null
     }
 
+    fun getPostForUser(uid: String): List<Post> {
+        val userPosts = ArrayList<Post>()
+        posts.value.forEach(action = {
+            if (it.id == uid)
+                userPosts.add(it)
+        })
+        return userPosts
+    }
+
 }
 
 fun postIsLiked(postId: String): Boolean {
