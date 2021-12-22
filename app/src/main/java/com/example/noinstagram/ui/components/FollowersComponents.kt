@@ -16,16 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.ui.theme.EditProfileButtonColor
-
+import com.example.noinstagram.utils.NavigationItem
 
 @Composable
-fun FollowingToFollowersSection(navController: NavHostController) {
+fun FollowersToFollowingSection(navController: NavHostController) {
     Row(
         Modifier
             .height(IntrinsicSize.Min)
@@ -34,7 +33,7 @@ fun FollowingToFollowersSection(navController: NavHostController) {
         horizontalArrangement = Arrangement.End
     ) {
         ClickableText(
-            text = AnnotatedString("Following"),
+            text = AnnotatedString("Followers"),
             style = MaterialTheme.typography.h5.copy(),
             onClick = {},
             modifier = Modifier.padding(end = 5.dp)
@@ -48,9 +47,9 @@ fun FollowingToFollowersSection(navController: NavHostController) {
         )
 
         ClickableText(
-            text = AnnotatedString("Followers"),
+            text = AnnotatedString("Following"),
             style = MaterialTheme.typography.h6.copy(),
-            onClick = { navController.navigate("FollowersPage") },
+            onClick = { navController.navigate(NavigationItem.Followers.route) },
             modifier = Modifier.padding(start = 5.dp)
         )
     }
@@ -58,17 +57,17 @@ fun FollowingToFollowersSection(navController: NavHostController) {
 
 @ExperimentalMaterialApi
 @Composable
-fun ListOfFollowing(userState: UsersRepository, currentUserUid: String?) {
-    val following = currentUserUid?.let { userState.getFollowing(it) }!!.toList()
+fun ListOfFollowers(userState: UsersRepository, currentUserUid: String?) {
+    val followers = currentUserUid?.let { userState.getFollowers(it) }!!.toList()
     LazyColumn(
         Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         contentPadding = PaddingValues(top = 10.dp),
         reverseLayout = true
     ) {
-        items(following) { following ->
+        items(followers) { follower ->
             ListItem(
-                text = { following.displayName?.let { Text(text = it) } },
+                text = { follower.displayName?.let { Text(text = it) } },
                 icon = {
                     Box(
                         modifier = Modifier
@@ -77,7 +76,7 @@ fun ListOfFollowing(userState: UsersRepository, currentUserUid: String?) {
                             .clip(CircleShape)
                     ) {
                         Image(
-                            painter = rememberImagePainter(following.image),
+                            painter = rememberImagePainter(follower.image),
                             contentDescription = null,
                             modifier = Modifier.fillMaxSize()
                         )
@@ -89,7 +88,14 @@ fun ListOfFollowing(userState: UsersRepository, currentUserUid: String?) {
                         backgroundColor = EditProfileButtonColor,
                         shape = RoundedCornerShape(5.dp)
                     ) {
-                        Text("Unfollow", color = Color.White)
+                        Text("Follow", color = Color.White)
+                    }
+                    FloatingActionButton(
+                        onClick = {},
+                        backgroundColor = EditProfileButtonColor,
+                        shape = RoundedCornerShape(5.dp)
+                    ) {
+                        Text("Delete", color = Color.White)
                     }
                 },
                 modifier = Modifier
@@ -110,11 +116,4 @@ fun ListOfFollowing(userState: UsersRepository, currentUserUid: String?) {
 
         }
     }
-}
-
-@ExperimentalMaterialApi
-@Preview
-@Composable
-fun FollowingPreview() {
-    ListOfFollowing(userState = UsersRepository, currentUserUid = "")
 }
