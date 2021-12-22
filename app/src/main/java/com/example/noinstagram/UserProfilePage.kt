@@ -3,37 +3,62 @@ package com.example.noinstagram
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.components.PostSection
 import com.example.noinstagram.ui.components.ProfileSection
-import com.google.firebase.database.ktx.getValue
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.delay
 
 @ExperimentalFoundationApi
 @Composable
-fun UserProfileScreen() {
+fun UserProfileScreen(user: UserModel, navController: NavHostController) {
+    var refreshing by remember { mutableStateOf(false) }
     val userState = remember {
         UsersRepository
     }
-    var user = UserModel()
-    userState.userSnapshots.value.forEach(action = {
-        if (it.key == "123")
-            user = it.getValue<UserModel>()!!
-    })
+    val postState = remember {
+        PostsRepository
+    }
     Log.d("TAG", "$user")
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(4.dp))
-        ProfileSection(user)
+        ProfileSection(modifier = Modifier, postState, userState)
         Spacer(modifier = Modifier.height(25.dp))
-        PostSection(
-            modifier = Modifier.fillMaxWidth()
-        )
+        //refresh
+        LaunchedEffect(refreshing) {
+            if (refreshing) {
+                delay(2000)
+                refreshing = false
+            }
+        }
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(refreshing),
+            onRefresh = { refreshing = true },
+            indicator = { state, refreshTriggerDistance ->
+                SwipeRefreshIndicator(
+                    state = state,
+                    refreshTriggerDistance = refreshTriggerDistance,
+                    scale = true
+                )
+            }
+        ) {
+            PostSection(
+                modifier = Modifier.fillMaxWidth(),
+                postState,
+                userState,
+                navController
+            )
+        }
     }
 }
 
@@ -41,5 +66,8 @@ fun UserProfileScreen() {
 @Composable
 @Preview
 fun UserProfilePreview() {
-    UserProfileScreen()
+    UserProfileScreen(
+        user = UserModel("abc", "def", "ghi"),
+        navController = rememberNavController()
+    )
 }

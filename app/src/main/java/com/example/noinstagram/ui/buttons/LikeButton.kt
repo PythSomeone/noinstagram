@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.noinstagram.data.postIsLiked
 import com.example.noinstagram.model.Post
 import com.example.noinstagram.model.UserModel
 
@@ -80,8 +81,8 @@ fun AnimLikeButton(
             }, label = ""
         ) { state ->
             when (state) {
-                LikeAnimationState.Initial -> if (post.isLiked) endColor else startColor
-                else -> if (post.isLiked.not()) startColor else endColor
+                LikeAnimationState.Initial -> if (postIsLiked(post.id!!)) endColor else startColor
+                else -> if (postIsLiked(post.id!!).not()) startColor else endColor
             }
         }
 
@@ -103,7 +104,7 @@ fun AnimLikeButton(
             }
         }
 
-        likeIconRes = if (post.isLiked) {
+        likeIconRes = if (postIsLiked(post.id!!)) {
             com.example.noinstagram.R.drawable.ic_filled_favorite
         } else {
             com.example.noinstagram.R.drawable.ic_filled_favorite_gray
@@ -122,14 +123,13 @@ fun AnimLikeButton(
 private fun LikeButtonPreview() {
     AnimLikeButton(
         post = Post(
-            id = 1,
+            id = "0",
             image = "https://source.unsplash.com/random/400x300",
             user = UserModel(
                 email = "K@c.com",
                 displayName = "Kamil"
             ),
-            likesCount = 100,
-            commentsCount = 20,
+            userLikes = mutableListOf("1","2"),
             timeStamp = System.currentTimeMillis() - (60000)
         ),
         onLikeClick = {

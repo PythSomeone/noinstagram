@@ -28,6 +28,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.model.Post
@@ -89,6 +91,7 @@ fun SearchSection(
 @ExperimentalFoundationApi
 @Composable
 fun ExplorePostSection(
+    navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
     val posts by PostsRepository.posts
@@ -98,14 +101,14 @@ fun ExplorePostSection(
             .scale(1.01f)
     ) {
         itemsIndexed(posts) { _, post ->
-            ExplorePostView(post)
+            ExplorePostView(post, navController)
             Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
 
 @Composable
-fun ExplorePostView(post: Post) {
+fun ExplorePostView(post: Post, navController: NavHostController) {
     Image(
         painter = rememberImagePainter(post.image),
         contentDescription = null,
@@ -118,7 +121,7 @@ fun ExplorePostView(post: Post) {
             )
             .padding(10.dp)
             .clip(RoundedCornerShape(10.dp))
-            .clickable { }
+            .clickable { navController.navigate("Post/${post.id}") }
     )
 }
 
@@ -132,5 +135,5 @@ fun SearchPreview() {
 @Composable
 @Preview
 fun ExplorePostPreview() {
-    ExplorePostSection()
+    ExplorePostSection(navController = rememberNavController())
 }

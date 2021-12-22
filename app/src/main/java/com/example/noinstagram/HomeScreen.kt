@@ -9,21 +9,26 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.model.Post
+import com.example.noinstagram.model.UserModel
+import com.example.noinstagram.ui.components.PostView
 import com.example.noinstagram.utils.Navigation
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @Composable
-fun HomeScreen() {
+fun HomeScreen(user: UserModel) {
     val navController = rememberNavController()
     val scaffoldState = rememberScaffoldState()
     Scaffold(
@@ -37,7 +42,7 @@ fun HomeScreen() {
         bottomBar = { BottomNavigationBar(navController) },
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            Navigation(navController = navController)
+            Navigation(navController = navController, user)
         }
     }
 }
@@ -45,22 +50,44 @@ fun HomeScreen() {
 @Composable
 fun HomeScreenUi(scope: CoroutineScope) {
     val posts by PostsRepository.posts
-    LazyColumn(modifier = Modifier.padding(top = 10.dp)) {
-        itemsIndexed(posts) { _, post ->
-            Post(post,
-                onLikeToggle = {
-                    scope.launch {
-                        PostsRepository.toggleLike(post.id)
-                    }
-                }
-            )
-            Spacer(modifier = Modifier.height(10.dp))
+    var refreshing by remember { mutableStateOf(false) }
+    //refresh
+    LaunchedEffect(refreshing) {
+        if (refreshing) {
+            delay(2000)
+            refreshing = false
         }
     }
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(refreshing),
+        onRefresh = { refreshing = true },
+        indicator = { state, refreshTriggerDistance ->
+            SwipeRefreshIndicator(
+                state = state,
+                refreshTriggerDistance = refreshTriggerDistance,
+                scale = true
+            )
+        }
+    ) {
+        LazyColumn(modifier = Modifier.padding(top = 10.dp)) {
+            itemsIndexed(posts) { _, post ->
+                Post(
+                    post,
+                    onLikeToggle = {
+                        scope.launch {
+                            PostsRepository.toggleLike(post.id!!)
+                        }
+                    }
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+            }
+        }
+    }
+
 }
 
 @Composable
-private fun Post(
+fun Post(
     post: Post,
     onLikeToggle: (Post) -> Unit
 ) {
