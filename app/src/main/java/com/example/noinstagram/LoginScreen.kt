@@ -22,11 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.ui.canva.NoInstagramCanvas
-import com.example.noinstagram.utils.LoadingState
-import com.example.noinstagram.viewmodel.AuthViewModel
 import com.example.noinstagram.viewmodel.LoginViewModel
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
 
 @Composable

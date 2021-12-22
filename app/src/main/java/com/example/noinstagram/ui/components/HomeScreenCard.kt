@@ -117,7 +117,7 @@ private fun PostHeader(post: Post) {
                     .clip(CircleShape)
             ) {
                 Image(
-                    painter = rememberImagePainter("https://s.gravatar.com/avatar/62a968f41c1feb83fd1cd142e7c043f3?s=200"),
+                    painter = rememberImagePainter(post.user?.image),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize()
                 )

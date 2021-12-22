@@ -8,6 +8,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.theme.NoInstagramTheme
 import com.example.noinstagram.utils.database.PostHandler
 import com.example.noinstagram.utils.database.UserHandler
@@ -26,10 +27,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             NoInstagramTheme {
                 val navController = rememberNavController()
-
+                val userModel = FirebaseAuth.getInstance().currentUser
+                val user = UserModel(userModel?.email, userModel?.displayName)
                 NavHost(
                     navController,
-                    if (FirebaseAuth.getInstance().currentUser != null) "HomePage" else "FirstPage"
+                    if (FirebaseAuth.getInstance().currentUser != null) {
+                        "HomePage"
+                    } else "FirstPage"
                 )
                 {
                     composable("FirstPage") {
@@ -39,7 +43,7 @@ class MainActivity : ComponentActivity() {
                         LoginScreen(navController)
                     }
                     composable("HomePage") {
-                        HomeScreen()
+                        HomeScreen(user)
                     }
                 }
             }

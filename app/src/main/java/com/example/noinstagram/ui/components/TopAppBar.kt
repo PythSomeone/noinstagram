@@ -15,10 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
+import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.ui.theme.NoInstagramTopBarTextColor
 
 @Composable
@@ -26,6 +28,7 @@ fun TopAppBar(
     backgroundColor: Color,
     title: String
 ) {
+    val userState = remember { UsersRepository }
     val expanded = remember { mutableStateOf(false) }
     TopAppBar(
         backgroundColor = backgroundColor,
@@ -69,11 +72,12 @@ fun TopAppBar(
                                 .clip(CircleShape)
                         ) {
                             Image(
-                                painter = rememberImagePainter("https://s.gravatar.com/avatar/62a968f41c1feb83fd1cd142e7c043f3?s=200"),
+                                painter = rememberImagePainter(userState.getCurrentUser()?.image),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .clickable { expanded.value = true }
+                                    .clickable { expanded.value = true },
+                                contentScale = ContentScale.Crop
                             )
                             DropdownMenu(
                                 expanded = expanded.value,

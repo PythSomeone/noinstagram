@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,17 +23,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.data.PostsRepository
+import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.model.Post
-import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.theme.EditProfileButtonColor
 
 @Composable
 fun ProfileSection(
-    userModel: UserModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    postState: PostsRepository,
+    userState: UsersRepository
 ) {
+    val user = userState.getCurrentUser()
     val minWidth = 95.dp
     val height = 30.dp
     Column(modifier = modifier.fillMaxWidth()) {
@@ -44,14 +46,16 @@ fun ProfileSection(
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
         ) {
-            RoundImage(
-                rememberImagePainter("https://s.gravatar.com/avatar/62a968f41c1feb83fd1cd142e7c043f3?s=200"),
-                modifier = Modifier
-                    .size(100.dp)
-                    .weight(3f)
-            )
+            if (user != null) {
+                RoundImage(
+                    rememberImagePainter(user.image),
+                    modifier = Modifier
+                        .size(100.dp)
+                        .weight(3f)
+                )
+            }
             Spacer(modifier = Modifier.width(16.dp))
-            StatSection(modifier = Modifier.weight(7f))
+            StatSection(modifier = Modifier.weight(7f), userState, postState)
         }
 
         Row(
@@ -61,10 +65,12 @@ fun ProfileSection(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Column(modifier = Modifier.weight(2f)) {
-                ProfileDescription(
-                    displayName = userModel?.displayName!!,
-                    description = userModel?.description!!
-                )
+                if (user != null) {
+                    ProfileDescription(
+                        displayName = user.displayName!!,
+                        description = user.description!!
+                    )
+                }
             }
             Column(
                 modifier = Modifier.weight(1f),
@@ -102,20 +108,35 @@ fun RoundImage(
                 shape = CircleShape
             )
             .padding(3.dp)
-            .clip(CircleShape)
+            .clip(CircleShape),
+        contentScale = ContentScale.Crop
     )
 }
 
 @Composable
-fun StatSection(modifier: Modifier = Modifier) {
+fun StatSection(
+    modifier: Modifier = Modifier,
+    userState: UsersRepository,
+    postState: PostsRepository
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
         modifier = modifier
     ) {
-        ProfileStat(numberText = "30", text = "Posts")
-        ProfileStat(numberText = "596", text = "Following")
-        ProfileStat(numberText = "12k", text = "Followers")
+        val currentUserId = userState.getCurrentUser()?.id
+        ProfileStat(
+            numberText = postState.getPostsForUser(currentUserId!!).count().toString(),
+            text = "Posts"
+        )
+        ProfileStat(
+            numberText = userState.getFollowing(currentUserId).count().toString(),
+            text = "Following"
+        )
+        ProfileStat(
+            numberText = userState.getFollowers(currentUserId).count().toString(),
+            text = "Followers"
+        )
     }
 }
 
@@ -169,23 +190,27 @@ fun ProfileDescription(
 @ExperimentalFoundationApi
 @Composable
 fun PostSection(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    postState: PostsRepository,
+    userState: UsersRepository,
+    navController: NavHostController
 ) {
-    val posts by PostsRepository.posts
+    val currentUserUid = userState.getCurrentUser()?.id
+    val posts = postState.getPostsForUser(currentUserUid!!)
     LazyVerticalGrid(
         cells = GridCells.Fixed(3),
         modifier = modifier
             .scale(1.01f)
     ) {
         itemsIndexed(posts) { _, post ->
-            ProfilePostView(post)
+            ProfilePostView(post, navController)
             Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
 
 @Composable
-fun ProfilePostView(post: Post) {
+fun ProfilePostView(post: Post, navController: NavHostController) {
     Image(
         painter = rememberImagePainter(post.image),
         contentDescription = null,
@@ -198,6 +223,6 @@ fun ProfilePostView(post: Post) {
             )
             .padding(3.dp)
             .clip(RoundedCornerShape(10.dp))
-            .clickable { }
+            .clickable { navController.navigate("Post/${post.id}") }
     )
 }
