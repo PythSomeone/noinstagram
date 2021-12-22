@@ -32,7 +32,6 @@ import com.example.noinstagram.R
 import com.example.noinstagram.model.Post
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.buttons.AnimLikeButton
-import com.google.firebase.auth.FirebaseAuth
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -43,15 +42,11 @@ fun PostView(
     post: Post,
     onLikeToggle: (Post) -> Unit
 ) {
-    val user = UserModel(
-        FirebaseAuth.getInstance().currentUser?.email,
-        FirebaseAuth.getInstance().currentUser?.displayName
-    )
     Column {
         var offset by remember { mutableStateOf(Offset.Zero) }
         var zoom by remember { mutableStateOf(1f) }
         var angle by remember { mutableStateOf(0f) }
-        PostHeader(user)
+        PostHeader(post)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -105,7 +100,7 @@ fun Offset.rotateBy(angle: Float): Offset {
 }
 
 @Composable
-private fun PostHeader(user: UserModel) {
+private fun PostHeader(post: Post) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -128,7 +123,7 @@ private fun PostHeader(user: UserModel) {
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
-            Text(text = user.displayName!!, style = MaterialTheme.typography.subtitle2)
+            Text(text = post.user!!.displayName!!, style = MaterialTheme.typography.subtitle2)
         }
         Icon(Icons.Filled.MoreVert, "")
     }
@@ -179,19 +174,19 @@ private fun PostFooterTextSection(post: Post) {
         )
     ) {
         Text(
-            "${post.likesCount} likes",
+            "${post.userLikes.count()} likes",
             style = MaterialTheme.typography.subtitle2
         )
 
         Text(
-            "View all ${post.commentsCount} comments",
+            "View all ${post.comments.count()} comments",
             style = MaterialTheme.typography.caption
         )
 
         Spacer(modifier = Modifier.height(2.dp))
 
         Text(
-            post.timeStamp.getTimeElapsedText(),
+            post.timeStamp!!.getTimeElapsedText(),
             style = MaterialTheme.typography.caption.copy(fontSize = 10.sp)
         )
     }
@@ -234,13 +229,9 @@ fun PostIconButton(
 fun PostViewPreview() {
     PostView(
         post = Post(
-            id = 0,
+            id = "0",
             image = "",
             user = UserModel(email = "abc", displayName = "kamil"),
-            isLiked = true,
-            likesCount = 3,
-            commentsCount = 2,
             timeStamp = 100
-        ), onLikeToggle = {}
-    )
+        ), onLikeToggle = {})
 }

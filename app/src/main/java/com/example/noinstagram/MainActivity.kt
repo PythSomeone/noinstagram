@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.theme.NoInstagramTheme
+import com.example.noinstagram.utils.database.PostHandler
 import com.example.noinstagram.utils.database.UserHandler
 import com.example.noinstagram.viewmodel.AuthViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -22,6 +23,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         UserHandler.userListener()
+        PostHandler.postListener()
         setContent {
             NoInstagramTheme {
                 val navController = rememberNavController()
