@@ -48,7 +48,7 @@ fun HomeScreen(user: UserModel) {
 }
 
 @Composable
-fun HomeScreenUi(scope: CoroutineScope, user: UserModel) {
+fun HomeScreenUi(scope: CoroutineScope) {
     val posts by PostsRepository.posts
     var refreshing by remember { mutableStateOf(false) }
     //refresh
@@ -77,8 +77,7 @@ fun HomeScreenUi(scope: CoroutineScope, user: UserModel) {
                         scope.launch {
                             PostsRepository.toggleLike(post.id!!)
                         }
-                    },
-                    user
+                    }
                 )
                 Spacer(modifier = Modifier.height(10.dp))
             }
@@ -88,10 +87,9 @@ fun HomeScreenUi(scope: CoroutineScope, user: UserModel) {
 }
 
 @Composable
-private fun Post(
+fun Post(
     post: Post,
-    onLikeToggle: (Post) -> Unit,
-    user: UserModel
+    onLikeToggle: (Post) -> Unit
 ) {
     PostView(post, onLikeToggle)
 }

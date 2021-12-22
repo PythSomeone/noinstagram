@@ -10,6 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.ui.components.ExplorePostSection
 import com.example.noinstagram.ui.components.SearchSection
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -19,7 +21,7 @@ import kotlinx.coroutines.delay
 
 @ExperimentalFoundationApi
 @Composable
-fun ExploreScreen() {
+fun ExploreScreen(navController: NavHostController) {
     var value by remember { mutableStateOf("") }
     val view = LocalView.current
     var refreshing by remember { mutableStateOf(false) }
@@ -57,7 +59,7 @@ fun ExploreScreen() {
                 },
             )
             Spacer(modifier = Modifier.height(25.dp))
-            ExplorePostSection()
+            ExplorePostSection(navController)
         }
     }
 
@@ -67,5 +69,5 @@ fun ExploreScreen() {
 @Composable
 @Preview
 fun ExplorePreview() {
-    ExploreScreen()
+    ExploreScreen(navController = rememberNavController())
 }

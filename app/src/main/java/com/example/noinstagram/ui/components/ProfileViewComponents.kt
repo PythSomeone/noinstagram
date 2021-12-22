@@ -23,6 +23,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.data.UsersRepository
@@ -191,7 +192,8 @@ fun ProfileDescription(
 fun PostSection(
     modifier: Modifier = Modifier,
     postState: PostsRepository,
-    userState: UsersRepository
+    userState: UsersRepository,
+    navController: NavHostController
 ) {
     val currentUserUid = userState.getCurrentUser()?.id
     val posts = postState.getPostsForUser(currentUserUid!!)
@@ -201,14 +203,14 @@ fun PostSection(
             .scale(1.01f)
     ) {
         itemsIndexed(posts) { _, post ->
-            ProfilePostView(post)
+            ProfilePostView(post, navController)
             Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
 
 @Composable
-fun ProfilePostView(post: Post) {
+fun ProfilePostView(post: Post, navController: NavHostController) {
     Image(
         painter = rememberImagePainter(post.image),
         contentDescription = null,
@@ -221,6 +223,6 @@ fun ProfilePostView(post: Post) {
             )
             .padding(3.dp)
             .clip(RoundedCornerShape(10.dp))
-            .clickable { }
+            .clickable { navController.navigate("Post/${post.id}") }
     )
 }

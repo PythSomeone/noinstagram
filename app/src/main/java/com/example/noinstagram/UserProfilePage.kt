@@ -7,6 +7,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.model.UserModel
@@ -19,7 +21,7 @@ import kotlinx.coroutines.delay
 
 @ExperimentalFoundationApi
 @Composable
-fun UserProfileScreen(user: UserModel) {
+fun UserProfileScreen(user: UserModel, navController: NavHostController) {
     var refreshing by remember { mutableStateOf(false) }
     val userState = remember {
         UsersRepository
@@ -53,7 +55,8 @@ fun UserProfileScreen(user: UserModel) {
             PostSection(
                 modifier = Modifier.fillMaxWidth(),
                 postState,
-                userState
+                userState,
+                navController
             )
         }
     }
@@ -63,5 +66,8 @@ fun UserProfileScreen(user: UserModel) {
 @Composable
 @Preview
 fun UserProfilePreview() {
-    UserProfileScreen(user = UserModel("abc", "def", "ghi"))
+    UserProfileScreen(
+        user = UserModel("abc", "def", "ghi"),
+        navController = rememberNavController()
+    )
 }
