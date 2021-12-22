@@ -61,11 +61,14 @@ fun GoogleButton(
                     val userModel = FirebaseAuth.getInstance().currentUser
                     if (userModel != null) {
                         UserHandler.setUser(
-                            UserModel(userModel.email, userModel.displayName),
-                            userModel.uid
+                            UserModel(
+                                id = userModel.uid,
+                                email = userModel.email,
+                                displayName = userModel.displayName
+                            )
                         )
                         navController.navigate("HomePage")
-                    } else Log.d(TAG, "wtf?")
+                    } else Log.d(TAG, "usermodel is null")
                 }
             } catch (e: ApiException) {
                 Log.w("TAG", "Google sign in failed", e)

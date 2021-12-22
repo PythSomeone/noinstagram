@@ -7,6 +7,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.noinstagram.data.PostsRepository
+import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.components.PostSection
 import com.example.noinstagram.ui.components.ProfileSection
@@ -19,11 +21,16 @@ import kotlinx.coroutines.delay
 @Composable
 fun UserProfileScreen(user: UserModel) {
     var refreshing by remember { mutableStateOf(false) }
-
+    val userState = remember {
+        UsersRepository
+    }
+    val postState = remember {
+        PostsRepository
+    }
     Log.d("TAG", "$user")
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(4.dp))
-        ProfileSection()
+        ProfileSection(modifier = Modifier, postState, userState)
         Spacer(modifier = Modifier.height(25.dp))
         //refresh
         LaunchedEffect(refreshing) {
@@ -44,7 +51,9 @@ fun UserProfileScreen(user: UserModel) {
             }
         ) {
             PostSection(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                postState,
+                userState
             )
         }
     }
