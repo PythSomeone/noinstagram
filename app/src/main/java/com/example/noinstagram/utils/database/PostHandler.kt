@@ -52,8 +52,8 @@ object PostHandler {
             }
     }
 
-    fun deletePost(uid: String) {
-        ref(uid).removeValue()
+    fun deletePost(post: Post) {
+        ref(post.id).removeValue()
     }
 
     fun postListener() {

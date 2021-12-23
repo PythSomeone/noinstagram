@@ -26,7 +26,7 @@ fun Navigation(navController: NavHostController) {
             HomeScreenUi(scope = rememberCoroutineScope())
         }
         composable(NavigationItem.Search.route) {
-            ExploreScreen()
+            ExploreScreen(navController)
         }
         composable(NavigationItem.AddPost.route) {
             //AddPostUi()
@@ -36,7 +36,12 @@ fun Navigation(navController: NavHostController) {
             //FollowersUi()
         }
         composable(NavigationItem.Profile.route) {
-            UserProfileScreen()
+            UserProfileScreen(navController)
+        }
+        composable("Post/{PostId}") { backstackEntry ->
+            PostDetailsPage(
+                backstackEntry.arguments?.getString("PostId")
+            )
         }
     }
 }
