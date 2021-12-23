@@ -9,6 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.components.PostSection
@@ -21,21 +22,18 @@ import kotlinx.coroutines.delay
 
 @ExperimentalFoundationApi
 @Composable
-fun UserProfileScreen(navController: NavHostController) {
-    //val navController = rememberNavController()
+fun UserProfileScreen(user: UserModel, navController: NavHostController) {
+    var refreshing by remember { mutableStateOf(false) }
     val userState = remember {
         UsersRepository
     }
-    var user = UserModel()
-    var refreshing by remember { mutableStateOf(false) }
-    userState.users.value.forEach(action = {
-        if (it.id == "uxjq0kpK8Ihdl4A4Ow2QCjbhTWz1")
-            user = it
-    })
+    val postState = remember {
+        PostsRepository
+    }
     Log.d("TAG", "$user")
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(4.dp))
-        ProfileSection(user, navController)
+        ProfileSection(modifier = Modifier, postState, userState, navController)
         Spacer(modifier = Modifier.height(25.dp))
         //refresh
         LaunchedEffect(refreshing) {
@@ -56,7 +54,10 @@ fun UserProfileScreen(navController: NavHostController) {
             }
         ) {
             PostSection(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                postState,
+                userState,
+                navController
             )
         }
     }
@@ -66,5 +67,8 @@ fun UserProfileScreen(navController: NavHostController) {
 @Composable
 @Preview
 fun UserProfilePreview() {
-    UserProfileScreen(rememberNavController())
+    UserProfileScreen(
+        user = UserModel("abc", "def", "ghi"),
+        navController = rememberNavController()
+    )
 }

@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.model.Post
+import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.components.PostView
 import com.example.noinstagram.utils.Navigation
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -27,7 +28,7 @@ import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @Composable
-fun HomeScreen() {
+fun HomeScreen(user: UserModel) {
     val navController = rememberNavController()
     val scaffoldState = rememberScaffoldState()
     Scaffold(
@@ -41,7 +42,7 @@ fun HomeScreen() {
         bottomBar = { BottomNavigationBar(navController) },
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            Navigation(navController = navController)
+            Navigation(navController = navController, user)
         }
     }
 }
@@ -70,7 +71,8 @@ fun HomeScreenUi(scope: CoroutineScope) {
     ) {
         LazyColumn(modifier = Modifier.padding(top = 10.dp)) {
             itemsIndexed(posts) { _, post ->
-                Post(post,
+                Post(
+                    post,
                     onLikeToggle = {
                         scope.launch {
                             PostsRepository.toggleLike(post.id!!)
@@ -85,7 +87,7 @@ fun HomeScreenUi(scope: CoroutineScope) {
 }
 
 @Composable
-private fun Post(
+fun Post(
     post: Post,
     onLikeToggle: (Post) -> Unit
 ) {
