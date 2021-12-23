@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.noinstagram.ui.buttons.LoginWithEmailButton
 import com.example.noinstagram.ui.canva.NoInstagramCanvas
 import com.example.noinstagram.viewmodel.RegisterViewModel
 
@@ -143,7 +144,8 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                         viewModel.createUserWithEmailAndPassword(
                             userName.trim(),
                             userEmail.trim(),
-                            userPassword.trim()
+                            userPassword.trim(),
+                            navController
                         )
                     },
                     shape = RoundedCornerShape(24.dp),
@@ -163,14 +165,15 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                     fontFamily = FontFamily(Font(R.font.verdana))
                 )
                 Spacer(Modifier.height(10.dp))
-                TextButton(onClick = { navController.navigate("LoginPage") }) {
-                    Text(
-                        text = "Click here",
-                        fontSize = 16.sp,
-                        color = Color.Black,
-                        fontFamily = FontFamily(Font(R.font.verdana))
-                    )
-                }
+//                TextButton(onClick = { navController.navigate("LoginPage") }) {
+//                    Text(
+//                        text = "Click here",
+//                        fontSize = 16.sp,
+//                        color = Color.Black,
+//                        fontFamily = FontFamily(Font(R.font.verdana))
+//                    )
+//                }
+                LoginWithEmailButton(navController)
             }
         )
     }

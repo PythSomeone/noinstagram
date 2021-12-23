@@ -47,14 +47,17 @@ import com.example.noinstagram.ui.theme.ChoosePhotoButtonColor
 import com.example.noinstagram.viewmodel.PostViewModel
 import java.util.Objects.isNull
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.noinstagram.utils.NavigationItem
 import com.example.noinstagram.viewmodel.ProfileViewModel
 
 @Composable
 fun EditProfileSection(
     user: UserModel,
+    navController: NavController,
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = viewModel(),
+
 ) {
     var description by remember { mutableStateOf(user.description) }
     var displayName by remember { mutableStateOf(user.displayName) }
@@ -230,6 +233,7 @@ fun EditProfileSection(
                             "Data changed...",
                             Toast.LENGTH_SHORT
                         ).show()
+                        navController.navigate(NavigationItem.Profile.route)
                     },
                     shape = RoundedCornerShape(6.dp),
                     modifier = Modifier

@@ -42,7 +42,7 @@ fun HomeScreen(user: UserModel) {
         bottomBar = { BottomNavigationBar(navController) },
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            Navigation(navController = navController, user)
+            Navigation(navController = navController)
         }
     }
 }

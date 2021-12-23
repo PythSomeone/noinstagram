@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,14 +24,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
-import com.example.noinstagram.EditProfileScreen
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.model.Post
-import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.theme.EditProfileButtonColor
 
 @Composable

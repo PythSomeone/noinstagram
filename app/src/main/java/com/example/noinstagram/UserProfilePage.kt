@@ -1,6 +1,5 @@
 package com.example.noinstagram
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -11,18 +10,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.data.UsersRepository
-import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.components.PostSection
 import com.example.noinstagram.ui.components.ProfileSection
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.google.firebase.database.ktx.getValue
 import kotlinx.coroutines.delay
 
 @ExperimentalFoundationApi
 @Composable
-fun UserProfileScreen(user: UserModel, navController: NavHostController) {
+fun UserProfileScreen(navController: NavHostController) {
     var refreshing by remember { mutableStateOf(false) }
     val userState = remember {
         UsersRepository
@@ -30,10 +27,9 @@ fun UserProfileScreen(user: UserModel, navController: NavHostController) {
     val postState = remember {
         PostsRepository
     }
-    Log.d("TAG", "$user")
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(4.dp))
-        ProfileSection(modifier = Modifier, postState, userState, navController)
+        ProfileSection(navController, modifier = Modifier, postState, userState )
         Spacer(modifier = Modifier.height(25.dp))
         //refresh
         LaunchedEffect(refreshing) {
@@ -68,7 +64,6 @@ fun UserProfileScreen(user: UserModel, navController: NavHostController) {
 @Preview
 fun UserProfilePreview() {
     UserProfileScreen(
-        user = UserModel("abc", "def", "ghi"),
         navController = rememberNavController()
     )
 }

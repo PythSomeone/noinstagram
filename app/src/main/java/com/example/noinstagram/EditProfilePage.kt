@@ -15,7 +15,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.components.EditProfileSection
@@ -29,22 +31,20 @@ import kotlinx.coroutines.delay
 
 @ExperimentalFoundationApi
 @Composable
-fun EditProfileScreen() {
+fun EditProfileScreen(
+    navController: NavController
+) {
+
     val userState = remember {
         UsersRepository
     }
-    var user = UserModel()
+    val user = userState.getCurrentUser()
     var refreshing by remember { mutableStateOf(false) }
-    userState.users.value.forEach(action = {
-        if (it.id == "uxjq0kpK8Ihdl4A4Ow2QCjbhTWz1") {
-            user = it
-        }
-    })
 
     Log.d("TAG", "$user")
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(4.dp))
-        EditProfileSection(user)
+        EditProfileSection(user!!, navController)
         Spacer(modifier = Modifier.height(25.dp))
         //refresh
         LaunchedEffect(refreshing) {
@@ -60,6 +60,6 @@ fun EditProfileScreen() {
 @Composable
 @Preview
 fun EditProfilePreview() {
-    EditProfileScreen()
+    EditProfileScreen(rememberNavController())
 }
 
