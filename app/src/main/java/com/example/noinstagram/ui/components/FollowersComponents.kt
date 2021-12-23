@@ -67,7 +67,14 @@ fun ListOfFollowers(userState: UsersRepository, currentUserUid: String?) {
     ) {
         items(followers) { follower ->
             ListItem(
-                text = { follower.displayName?.let { Text(text = it) } },
+                text = {
+                    follower.displayName?.let {
+                        Text(
+                            text = it,
+                            // modifier = Modifier.clickable { //navController.navigate("Profile/${person.id}" }
+                        )
+                    }
+                },
                 icon = {
                     Box(
                         modifier = Modifier
@@ -78,17 +85,25 @@ fun ListOfFollowers(userState: UsersRepository, currentUserUid: String?) {
                         Image(
                             painter = rememberImagePainter(follower.image),
                             contentDescription = null,
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clickable {
+                                    //navController.navigate("Profile/${person.id}")
+                                }
                         )
                     }
                 },
                 trailing = {
                     FloatingActionButton(
-                        onClick = {},
+                        onClick = { follower.id?.let { userState.followUser(it) } },
                         backgroundColor = EditProfileButtonColor,
                         shape = RoundedCornerShape(5.dp)
                     ) {
-                        Text("Follow", color = Color.White)
+                        if (follower.id?.let { userState.userIsFollowed(it) } == true) {
+                            Text("Unfollow", color = Color.White)
+                        } else {
+                            Text("Follow", color = Color.White)
+                        }
                     }
                     FloatingActionButton(
                         onClick = {},
@@ -102,10 +117,7 @@ fun ListOfFollowers(userState: UsersRepository, currentUserUid: String?) {
                     .fillMaxWidth()
                     .padding(3.dp)
                     .height(81.dp)
-                    .padding(horizontal = 30.dp)
-                    .clickable {
-                        //navController.navigate("Profile/${person.id}")
-                    },
+                    .padding(horizontal = 30.dp),
             )
             Divider(
                 color = Color.Black,

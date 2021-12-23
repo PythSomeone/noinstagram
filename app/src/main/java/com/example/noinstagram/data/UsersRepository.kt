@@ -1,6 +1,5 @@
 package com.example.noinstagram.data
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.example.noinstagram.model.UserModel
@@ -55,13 +54,10 @@ object UsersRepository {
         var them = getUser(uid)
 
         if (we != null && them != null) {
-            if (!userIsFollowed(them?.id!!))
-            {
+            if (!userIsFollowed(them.id!!)) {
                 we.following.add(them.id)
                 them.followers.add(we.id)
-            }
-            else
-            {
+            } else {
                 we.following.remove(them.id)
                 them.followers.remove(we.id)
             }
@@ -94,7 +90,8 @@ object UsersRepository {
         })
         return followers
     }
-    private fun userIsFollowed(uid: String): Boolean {
+
+    fun userIsFollowed(uid: String): Boolean {
         val currentUser = Firebase.auth.currentUser?.uid
         if (currentUser != null) {
             getUser(currentUser)?.following?.forEach(action = {
