@@ -124,7 +124,7 @@ fun FirstPageScreenContent(
 
 @Composable
 fun SignUpTextBox(navController: NavController) {
-    TextButton(onClick = { }) {
+    TextButton(onClick = { navController.navigate("RegisterPage") }) {
         Text(
             text = "Sign up",
             fontSize = 16.sp,

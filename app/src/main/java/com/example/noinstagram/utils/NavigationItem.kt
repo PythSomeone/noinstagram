@@ -8,7 +8,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.noinstagram.*
-import com.example.noinstagram.model.UserModel
 
 
 sealed class NavigationItem(var route: String, var icon: Int, var title: String) {
@@ -22,7 +21,7 @@ sealed class NavigationItem(var route: String, var icon: Int, var title: String)
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
-fun Navigation(navController: NavHostController, user: UserModel) {
+fun Navigation(navController: NavHostController) {
     NavHost(navController, startDestination = NavigationItem.Home.route) {
         composable(NavigationItem.Home.route) {
             HomeScreenUi(scope = rememberCoroutineScope())
@@ -31,18 +30,22 @@ fun Navigation(navController: NavHostController, user: UserModel) {
             ExploreScreen(navController)
         }
         composable(NavigationItem.AddPost.route) {
-            //AddPostUi()
+            AddPostScreen()
         }
         composable(NavigationItem.Followers.route) {
             FollowingScreen(navController)
         }
         composable(NavigationItem.Profile.route) {
-            UserProfileScreen(user, navController)
+            UserProfileScreen(navController)
         }
         composable("Post/{PostId}") { backstackEntry ->
             PostDetailsPage(
                 backstackEntry.arguments?.getString("PostId")
             )
+            UserProfileScreen(navController)
+        }
+        composable("EditScreen") {
+            EditProfileScreen(navController)
         }
         composable("FollowersPage") {
             FollowersPage(navController)

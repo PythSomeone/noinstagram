@@ -1,6 +1,7 @@
 package com.example.noinstagram.utils.database
 
 import android.content.ContentValues
+import android.net.Uri
 import android.util.Log
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.data.UsersRepository
@@ -19,15 +20,16 @@ object PostHandler {
     private val database = Firebase.database("https://noinstagram-e6c32-default-rtdb.europe-west1.firebasedatabase.app")
     private const val refName = "Posts"
 
-    suspend fun createNewPost(picture: File) {
+    suspend fun createNewPost(uri: Uri, description : String?) {
         val newRef = ref().push()
         val picUrl: String
         StorageHandler.run {
-            picUrl = uploadPicture(picture, StorageHandler.Folder.POST)
+            picUrl = uploadPicture(uri, StorageHandler.Folder.POST)
         }
         val post = Post(
             id = newRef.key,
             image = picUrl,
+            description = description,
             user = UsersRepository.getCurrentUser(),
             timeStamp = System.currentTimeMillis()
         )
