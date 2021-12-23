@@ -6,24 +6,22 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.noinstagram.data.UsersRepository
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.ui.components.AddPostSection
 
 @ExperimentalFoundationApi
 @Composable
-fun AddPostScreen() {
-    val userState = remember {
-        UsersRepository
-    }
-    val user = userState.getCurrentUser()
+fun AddPostScreen(
+    navController: NavController
+) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(4.dp))
-        AddPostSection(user!!)
+        AddPostSection(navController)
         Spacer(modifier = Modifier.height(25.dp))
         //refresh
     }
@@ -34,5 +32,5 @@ fun AddPostScreen() {
 @Composable
 @Preview
 fun AddPostPreview() {
-    AddPostScreen()
+    AddPostScreen(rememberNavController())
 }
