@@ -22,11 +22,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.ui.canva.NoInstagramCanvas
-import com.example.noinstagram.viewmodel.LoginViewModel
+import com.example.noinstagram.viewmodel.RegisterViewModel
+
 
 
 @Composable
-fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewModel()) {
+fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = viewModel()) {
+    var userName by remember { mutableStateOf("") }
     var userEmail by remember { mutableStateOf("") }
     var userPassword by remember { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false) }
@@ -34,15 +36,14 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
         painterResource(id = R.drawable.ic_visibility_on)
     else
         painterResource(id = R.drawable.ic_visibility_off)
-        
-    val state by viewModel.loadingState.collectAsState()
+
 
     Surface(
         color = MaterialTheme.colors.primary,
         modifier = Modifier
             .fillMaxSize()
     ) {
-        LoginPageBackground()
+        RegisterScreenBackground()
 
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -52,7 +53,29 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                 NoInstagramCanvas()
 
                 Spacer(Modifier.height(70.dp))
-                LoginToAccountTextBox()
+                RegisterAccountTextBox()
+
+                Spacer(Modifier.height(20.dp))
+
+                OutlinedTextField(
+                    modifier = Modifier.width(300.dp),
+                    value = userName,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.White,
+                        unfocusedBorderColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(24.dp),
+                    label = {
+                        Text(
+                            text = "Name",
+                            color = Color.White,
+                            modifier = Modifier.padding(start = 20.dp)
+                        )
+                    },
+                    onValueChange = {
+                        userName = it
+                    }
+                )
 
                 Spacer(Modifier.height(20.dp))
 
@@ -112,12 +135,13 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
                 )
 
-                Spacer(Modifier.height(40.dp))
+                Spacer(Modifier.height(20.dp))
 
                 Button(
                     enabled = userEmail.isNotEmpty() && userPassword.isNotEmpty(),
                     onClick = {
-                        viewModel.signInWithEmailAndPassword(
+                        viewModel.createUserWithEmailAndPassword(
+                            userName.trim(),
                             userEmail.trim(),
                             userPassword.trim()
                         )
@@ -127,37 +151,21 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                         .width(300.dp)
                         .alpha(0.4f),
                     content = {
-                        Text(text = "Login")
+                        Text(text = "Register")
                     },
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
                 )
 
                 Text(
-                    text = "Forgot your password?",
+                    text = "Already have an account?",
                     fontSize = 16.sp,
                     color = Color.White,
                     fontFamily = FontFamily(Font(R.font.verdana))
                 )
                 Spacer(Modifier.height(10.dp))
-                TextButton(onClick = { /* Do something! */ }) {
+                TextButton(onClick = { navController.navigate("LoginPage") }) {
                     Text(
                         text = "Click here",
-                        fontSize = 16.sp,
-                        color = Color.Black,
-                        fontFamily = FontFamily(Font(R.font.verdana))
-                    )
-                }
-                Spacer(Modifier.height(10.dp))
-                Text(
-                    text = "Don't have an account?",
-                    fontSize = 16.sp,
-                    color = Color.White,
-                    fontFamily = FontFamily(Font(R.font.verdana))
-                )
-                Spacer(Modifier.height(10.dp))
-                TextButton(onClick = { navController.navigate("RegisterPage") }) {
-                    Text(
-                        text = "Sign up",
                         fontSize = 16.sp,
                         color = Color.Black,
                         fontFamily = FontFamily(Font(R.font.verdana))
@@ -172,14 +180,14 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview() {
-    LoginScreen(navController = rememberNavController())
+fun RegisterScreenPreview() {
+    RegisterScreen(navController = rememberNavController())
 }
 
 @Composable
-fun LoginToAccountTextBox() {
+fun RegisterAccountTextBox() {
     Text(
-        text = "Login to your account",
+        text = "Register your account",
         fontSize = 20.sp,
         color = Color.White,
         fontFamily = FontFamily(Font(R.font.verdana))
@@ -187,7 +195,7 @@ fun LoginToAccountTextBox() {
 }
 
 @Composable
-fun LoginScreenBackground() {
+fun RegisterScreenBackground() {
     Image(
         painterResource(id = R.mipmap.ic_first_page_background_foreground),
         contentDescription = null,

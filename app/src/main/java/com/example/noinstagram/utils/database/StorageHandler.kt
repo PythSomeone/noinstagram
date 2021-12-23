@@ -22,14 +22,13 @@ object StorageHandler {
     private val ref = storage.reference
 
     // It will return download url for picture
-    suspend fun uploadPicture(file: File, folder: Folder): String {
+    suspend fun uploadPicture(uri: Uri, folder: Folder): String {
         var urlToFile = ""
-        val uri = Uri.fromFile(file)
         val riverRef = ref.child("${folder.name}/${UsersRepository.getCurrentUser()?.id}/${uri.lastPathSegment}")
 
         riverRef.putFile(uri)
             .addOnSuccessListener {
-                Log.d(TAG, "$file was added")
+                Log.d(TAG, "$uri was added")
             }.await()
         riverRef.downloadUrl.addOnCompleteListener {
             urlToFile = it.result.toString()

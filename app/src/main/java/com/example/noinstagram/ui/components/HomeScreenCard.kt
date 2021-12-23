@@ -85,7 +85,15 @@ fun PostView(
                     }
 
             )
+
         }
+        Text(
+            post.description!!,
+            Modifier.padding(end = 10.dp),
+            fontSize = 25.sp
+        )
+        Spacer(modifier = Modifier.height(1.dp))
+
         PostFooter(post, onLikeToggle)
         Divider()
     }
