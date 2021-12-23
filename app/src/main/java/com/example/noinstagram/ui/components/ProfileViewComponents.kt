@@ -32,6 +32,7 @@ import com.example.noinstagram.ui.theme.EditProfileButtonColor
 
 @Composable
 fun ProfileSection(
+    navController: NavHostController,
     modifier: Modifier = Modifier,
     postState: PostsRepository,
     userState: UsersRepository
@@ -80,7 +81,9 @@ fun ProfileSection(
                     modifier = Modifier
                         .defaultMinSize(minWidth = minWidth)
                         .height(height),
-                    onClick = {},
+                    onClick = {
+                        navController.navigate("EditScreen")
+                    },
                     backgroundColor = EditProfileButtonColor,
                     shape = RoundedCornerShape(5.dp)
                 ) {
