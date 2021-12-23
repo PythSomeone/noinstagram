@@ -14,10 +14,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.model.Post
-import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.components.PostView
 import com.example.noinstagram.utils.Navigation
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
-fun HomeScreen(user: UserModel) {
+fun HomeScreen() {
     val navController = rememberNavController()
     val scaffoldState = rememberScaffoldState()
     Scaffold(
@@ -44,13 +44,13 @@ fun HomeScreen(user: UserModel) {
         bottomBar = { BottomNavigationBar(navController) },
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            Navigation(navController = navController, user)
+            Navigation(navController = navController)
         }
     }
 }
 
 @Composable
-fun HomeScreenUi(scope: CoroutineScope) {
+fun HomeScreenUi(scope: CoroutineScope, navController: NavHostController) {
     val posts by PostsRepository.posts
     var refreshing by remember { mutableStateOf(false) }
     //refresh
@@ -72,14 +72,15 @@ fun HomeScreenUi(scope: CoroutineScope) {
         }
     ) {
         LazyColumn(modifier = Modifier.padding(top = 10.dp)) {
-            itemsIndexed(posts) { _, post ->
+            itemsIndexed(posts.asReversed()) { _, post ->
                 Post(
                     post,
                     onLikeToggle = {
                         scope.launch {
                             PostsRepository.toggleLike(post.id!!)
                         }
-                    }
+                    },
+                    navController = navController
                 )
                 Spacer(modifier = Modifier.height(10.dp))
             }
@@ -91,7 +92,8 @@ fun HomeScreenUi(scope: CoroutineScope) {
 @Composable
 fun Post(
     post: Post,
-    onLikeToggle: (Post) -> Unit
+    onLikeToggle: (Post) -> Unit,
+    navController: NavHostController
 ) {
-    PostView(post, onLikeToggle)
+    PostView(post, onLikeToggle, navController)
 }

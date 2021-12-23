@@ -22,17 +22,15 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.noinstagram.model.UserModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.noinstagram.ui.theme.AddPostButtonColor
 import com.example.noinstagram.ui.theme.ChoosePhotoButtonColor
 import com.example.noinstagram.viewmodel.PostViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import java.io.File
 
 
 @Composable
 fun AddPostSection(
-    user: UserModel,
     modifier: Modifier = Modifier,
     viewModel: PostViewModel = viewModel(),
 ) {

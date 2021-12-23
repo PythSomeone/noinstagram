@@ -27,6 +27,8 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.R
 import com.example.noinstagram.model.Post
@@ -40,13 +42,14 @@ import kotlin.math.sin
 @Composable
 fun PostView(
     post: Post,
-    onLikeToggle: (Post) -> Unit
+    onLikeToggle: (Post) -> Unit,
+    navController: NavHostController
 ) {
     Column {
         var offset by remember { mutableStateOf(Offset.Zero) }
         var zoom by remember { mutableStateOf(1f) }
         var angle by remember { mutableStateOf(0f) }
-        PostHeader(post)
+        PostHeader(post, navController)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -108,7 +111,7 @@ fun Offset.rotateBy(angle: Float): Offset {
 }
 
 @Composable
-private fun PostHeader(post: Post) {
+private fun PostHeader(post: Post, navController: NavHostController) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -133,7 +136,7 @@ private fun PostHeader(post: Post) {
             Spacer(modifier = Modifier.width(10.dp))
             Text(text = post.user!!.displayName!!,
                 style = MaterialTheme.typography.subtitle2,
-                modifier = Modifier.clickable { })
+                modifier = Modifier.clickable { navController.navigate("PublicProfile/${post.user.id}") })
         }
         Icon(Icons.Filled.MoreVert, "")
     }
@@ -243,5 +246,6 @@ fun PostViewPreview() {
             image = "",
             user = UserModel(email = "abc", displayName = "kamil"),
             timeStamp = 100
-        ), onLikeToggle = {})
+        ), onLikeToggle = {}, navController = rememberNavController()
+    )
 }

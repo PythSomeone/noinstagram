@@ -9,32 +9,50 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.data.UsersRepository
+import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.imageview.ProfilePostView
 import com.example.noinstagram.ui.imageview.RoundImage
 import com.example.noinstagram.ui.theme.EditProfileButtonColor
 
+
+@ExperimentalFoundationApi
 @Composable
-fun ProfileSection(
-    navController: NavHostController,
-    modifier: Modifier = Modifier,
+fun SelectedProfilePostSection(
+    modifier: Modifier,
     postState: PostsRepository,
-    userState: UsersRepository
+    navController: NavHostController,
+    user: UserModel?
 ) {
-    val user = userState.getCurrentUser()
+    val selectedUserUid = user?.id
+    val posts = postState.getPostsForUser(selectedUserUid!!)
+    LazyVerticalGrid(
+        cells = GridCells.Fixed(3),
+        modifier = modifier
+            .scale(1.01f)
+    ) {
+        itemsIndexed(posts) { _, post ->
+            ProfilePostView(post, navController)
+            Spacer(modifier = Modifier.height(10.dp))
+        }
+    }
+}
+
+@Composable
+fun SelectedProfileSection(
+    modifier: Modifier,
+    postState: PostsRepository,
+    userState: UsersRepository,
+    user: UserModel?
+) {
     val minWidth = 95.dp
     val height = 30.dp
     Column(modifier = modifier.fillMaxWidth()) {
@@ -53,7 +71,7 @@ fun ProfileSection(
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
-            StatSection(modifier = Modifier.weight(7f), userState, postState)
+            SelectedProfileStatSection(modifier = Modifier.weight(7f), userState, postState, user)
         }
 
         Row(
@@ -79,12 +97,20 @@ fun ProfileSection(
                         .defaultMinSize(minWidth = minWidth)
                         .height(height),
                     onClick = {
-                        navController.navigate("EditScreen")
+                        if (user != null) {
+                            user.id?.let { userState.followUser(it) }
+                        }
                     },
                     backgroundColor = EditProfileButtonColor,
                     shape = RoundedCornerShape(5.dp)
                 ) {
-                    Text("Edit Profile", color = Color.White)
+                    if (user != null) {
+                        if (user.id?.let { userState.userIsFollowed(it) } == true) {
+                            Text("Unfollow", color = Color.White)
+                        }
+                    } else {
+                        Text("Follow", color = Color.White)
+                    }
                 }
             }
         }
@@ -92,36 +118,22 @@ fun ProfileSection(
     }
 }
 
-
-
 @Composable
-fun StatSection(
+fun SelectedProfileStatSection(
     modifier: Modifier = Modifier,
     userState: UsersRepository,
-    postState: PostsRepository
+    postState: PostsRepository,
+    user: UserModel?
 ) {
-    val currentUserId = userState.getCurrentUser()?.id
-    val postsCount by remember {
-        mutableStateOf(
-            postState.getPostsForUser(currentUserId!!).count()
-        )
-    }
-    val followersCount by remember {
-        mutableStateOf(
-            userState.getFollowing(currentUserId!!).count()
-        )
-    }
-    val followingCount by remember {
-        mutableStateOf(
-            userState.getFollowers(currentUserId!!).count()
-        )
-    }
+    val userId = user?.id
+    val postsCount = postState.getPostsForUser(userId!!).count()
+    val followersCount = userState.getFollowing(userId).count()
+    val followingCount = userState.getFollowers(userId).count()
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
         modifier = modifier
     ) {
-
         ProfileStat(
             numberText = postsCount.toString(),
             text = "Posts"
@@ -134,74 +146,5 @@ fun StatSection(
             numberText = followersCount.toString(),
             text = "Followers"
         )
-    }
-}
-
-@Composable
-fun ProfileStat(
-    numberText: String,
-    text: String,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-    ) {
-        Text(
-            text = numberText,
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(text = text)
-    }
-}
-
-@Composable
-fun ProfileDescription(
-    displayName: String,
-    description: String
-) {
-    val letterSpacing = 0.5.sp
-    val lineHeight = 20.sp
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 20.dp)
-    ) {
-        Text(
-            text = displayName,
-            fontWeight = FontWeight.Bold,
-            letterSpacing = letterSpacing,
-            lineHeight = lineHeight
-        )
-        Text(
-            text = description,
-            letterSpacing = letterSpacing,
-            lineHeight = lineHeight,
-            maxLines = 4
-        )
-    }
-}
-
-@ExperimentalFoundationApi
-@Composable
-fun PostSection(
-    modifier: Modifier = Modifier,
-    postState: PostsRepository,
-    userState: UsersRepository,
-    navController: NavHostController
-) {
-    val currentUserUid = userState.getCurrentUser()?.id
-    val posts = postState.getPostsForUser(currentUserUid!!)
-    LazyVerticalGrid(
-        cells = GridCells.Fixed(3),
-        modifier = modifier
-            .scale(1.01f)
-    ) {
-        itemsIndexed(posts) { _, post ->
-            ProfilePostView(post, navController)
-            Spacer(modifier = Modifier.height(10.dp))
-        }
     }
 }

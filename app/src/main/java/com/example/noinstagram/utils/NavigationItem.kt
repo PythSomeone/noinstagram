@@ -24,7 +24,7 @@ sealed class NavigationItem(var route: String, var icon: Int, var title: String)
 fun Navigation(navController: NavHostController) {
     NavHost(navController, startDestination = NavigationItem.Home.route) {
         composable(NavigationItem.Home.route) {
-            HomeScreenUi(scope = rememberCoroutineScope())
+            HomeScreenUi(scope = rememberCoroutineScope(), navController)
         }
         composable(NavigationItem.Search.route) {
             ExploreScreen(navController)
@@ -40,7 +40,8 @@ fun Navigation(navController: NavHostController) {
         }
         composable("Post/{PostId}") { backstackEntry ->
             PostDetailsPage(
-                backstackEntry.arguments?.getString("PostId")
+                backstackEntry.arguments?.getString("PostId"),
+                navController
             )
             UserProfileScreen(navController)
         }
@@ -49,6 +50,12 @@ fun Navigation(navController: NavHostController) {
         }
         composable("FollowersPage") {
             FollowersPage(navController)
+        }
+        composable("PublicProfile/{UserId}") { backstackEntry ->
+            PublicProfileScreen(
+                backstackEntry.arguments?.getString("UserId"),
+                navController
+            )
         }
     }
 }

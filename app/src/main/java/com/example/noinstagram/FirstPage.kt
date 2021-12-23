@@ -1,15 +1,10 @@
 package com.example.noinstagram
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +30,7 @@ import com.facebook.login.widget.LoginButton
 import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.launch
 
+@ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
 fun FirstPage(navController: NavController, authViewModel: AuthViewModel) {
@@ -64,8 +60,7 @@ fun FirstPage(navController: NavController, authViewModel: AuthViewModel) {
         }
 
     user?.let {
-        HomeScreen(user = it)
-        Log.d(TAG, "dsa")
+        HomeScreen()
     }
 
     Surface(
@@ -145,6 +140,7 @@ fun FirstPageBackground() {
     )
 }
 
+@ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Preview
 @Composable
