@@ -1,33 +1,30 @@
 package com.example.noinstagram.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.noinstagram.model.Post
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.utils.LoadingState
-import com.example.noinstagram.utils.database.PostHandler
+import com.example.noinstagram.utils.database.StorageHandler
 import com.example.noinstagram.utils.database.UserHandler
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 class ProfileViewModel : ViewModel() {
     val loadingState = MutableStateFlow(LoadingState.IDLE)
     private val userHandler = UserHandler
+    private val storageHandler = StorageHandler
 
-
-    fun changeData(user: UserModel, description: String, displayName: String, ) = viewModelScope.launch {
+    fun changeData(user: UserModel, description: String?, displayName: String?, imageUri : Uri) = viewModelScope.launch {
         try {
             loadingState.emit(LoadingState.LOADING)
-            var userToUpdate = user
-            userToUpdate.description = description
-            userToUpdate.displayName = displayName
-            userHandler.setUser(userToUpdate, userToUpdate.id!!)
+            user.description = description
+            user.displayName = displayName
+            Log.d("db", "working")
+            val photoUrl = storageHandler.uploadPicture(imageUri, StorageHandler.Folder.PROFILE)
+            user.image = photoUrl
+            userHandler.setUser(user)
             loadingState.emit(LoadingState.LOADED)
         } catch (e: Exception) {
             loadingState.emit(LoadingState.error(e.localizedMessage))
@@ -35,11 +32,12 @@ class ProfileViewModel : ViewModel() {
     }
 
 
-    fun uploadImage(image: String, user: UserModel) = viewModelScope.launch {
+    fun changeData(user: UserModel, description: String?, displayName: String?) = viewModelScope.launch {
         try {
             loadingState.emit(LoadingState.LOADING)
-            var post = Post(null, image, user,)
-            PostHandler.setPost(post)
+            user.description = description
+            user.displayName = displayName
+            userHandler.setUser(user)
             loadingState.emit(LoadingState.LOADED)
         } catch (e: Exception) {
             loadingState.emit(LoadingState.error(e.localizedMessage))

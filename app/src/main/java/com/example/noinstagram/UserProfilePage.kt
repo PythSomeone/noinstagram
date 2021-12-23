@@ -7,6 +7,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.components.PostSection
@@ -19,20 +21,21 @@ import kotlinx.coroutines.delay
 
 @ExperimentalFoundationApi
 @Composable
-fun UserProfileScreen() {
+fun UserProfileScreen(navController: NavHostController) {
+    //val navController = rememberNavController()
     val userState = remember {
         UsersRepository
     }
     var user = UserModel()
     var refreshing by remember { mutableStateOf(false) }
     userState.users.value.forEach(action = {
-        if (it.id == "123")
+        if (it.id == "uxjq0kpK8Ihdl4A4Ow2QCjbhTWz1")
             user = it
     })
     Log.d("TAG", "$user")
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(4.dp))
-        ProfileSection(user)
+        ProfileSection(user, navController)
         Spacer(modifier = Modifier.height(25.dp))
         //refresh
         LaunchedEffect(refreshing) {
@@ -63,5 +66,5 @@ fun UserProfileScreen() {
 @Composable
 @Preview
 fun UserProfilePreview() {
-    UserProfileScreen()
+    UserProfileScreen(rememberNavController())
 }

@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -55,8 +56,8 @@ fun EditProfileSection(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = viewModel(),
 ) {
-    var description by remember { mutableStateOf("") }
-    var displayName by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf(user.description) }
+    var displayName by remember { mutableStateOf(user.displayName) }
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
@@ -86,31 +87,68 @@ fun EditProfileSection(
                 EditProfileTextBox()
 
                 Spacer(Modifier.height(20.dp))
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(150.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    content = {
-                        imageUri?.let {
-                            if (Build.VERSION.SDK_INT < 28) {
-                                bitmap.value = MediaStore.Images
-                                    .Media.getBitmap(context.contentResolver,it)
+                if((imageUri != null)) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        content = {
+                            imageUri?.let {
+                                if (Build.VERSION.SDK_INT < 28) {
+                                    bitmap.value = MediaStore.Images
+                                        .Media.getBitmap(context.contentResolver, it)
 
-                            } else {
-                                val source = ImageDecoder
-                                    .createSource(context.contentResolver,it)
-                                bitmap.value = ImageDecoder.decodeBitmap(source)
-                            }
-                            bitmap.value?.let {  btm ->
-                                RoundImage(
-                                    btm,
-                                    modifier = Modifier
-                                        .size(150.dp))
+                                } else {
+                                    val source = ImageDecoder
+                                        .createSource(context.contentResolver, it)
+                                    bitmap.value = ImageDecoder.decodeBitmap(source)
+                                }
+                                bitmap.value?.let { btm ->
+                                    RoundImage(
+                                        btm,
+                                        modifier = modifier
+                                            .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                                            .border(
+                                                width = 1.dp,
+                                                color = Color.LightGray,
+                                                shape = CircleShape
+                                            )
+                                            .padding(3.dp)
+                                            .clip(CircleShape)
+                                            .height(100.dp)
+                                    )
+                                }
                             }
                         }
-                    }
-                )
+                    )
+                }
+                else{
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        content = {
+                            Image(
+                                painter = rememberImagePainter(user.image),
+                                contentDescription = null,
+                                modifier = modifier
+                                    .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                                    .border(
+                                        width = 1.dp,
+                                        color = Color.LightGray,
+                                        shape = CircleShape
+                                    )
+                                    .padding(3.dp)
+                                    .clip(CircleShape)
+                                    .height(100.dp)
+                            )
+                        }
+                    )
+
+
+                }
 
 
                 Spacer(Modifier.height(20.dp))
@@ -139,14 +177,14 @@ fun EditProfileSection(
                         .padding(3.dp)
                         .shadow(elevation = 3.dp),
                     maxLines = 4,
-                    value = displayName,
+                    value = displayName!!,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Black,
                         unfocusedBorderColor = Color.Black
                     ),
                     label = {
                         Text(
-                            text = user.displayName!!,
+                            text = "Change name",
                             color = Color.Gray,
                         )
                     },
@@ -161,14 +199,14 @@ fun EditProfileSection(
                         .padding(3.dp)
                         .shadow(elevation = 3.dp),
                     maxLines = 4,
-                    value = description,
+                    value = description!!,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Black,
                         unfocusedBorderColor = Color.Black
                     ),
                     label = {
                         Text(
-                            text = user.description!!,
+                            text = "Profile description",
                             color = Color.Gray,
                         )
                     },
@@ -180,16 +218,25 @@ fun EditProfileSection(
                 Spacer(Modifier.height(20.dp))
 
                 Button(
-                    enabled= imageUri.toString().isNotEmpty(),
                     onClick = {
-                        viewModel.uploadImage(imageUri.toString(), user)
+                        val uriExists = imageUri!=null
+                        if(uriExists) {
+                            viewModel.changeData(user, description!!, displayName!!, imageUri!!)
+                        }
+                        else
+                            viewModel.changeData(user, description!!, displayName!!)
+                        Toast.makeText(
+                            context,
+                            "Data changed...",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     },
                     shape = RoundedCornerShape(6.dp),
                     modifier = Modifier
                         .width(150.dp),
                     content = {
                         Text(
-                            text = "Add post",
+                            text = "Save",
                             color = Color.White,
                         )
                     },
@@ -233,6 +280,8 @@ fun RoundImage(
             .clip(CircleShape)
     )
 }
+
+
 
 
 

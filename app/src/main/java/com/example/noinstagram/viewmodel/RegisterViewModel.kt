@@ -22,6 +22,7 @@ class RegisterViewModel : ViewModel() {
             Firebase.auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener {
                 val uid = it.user?.uid!!
                 val user = UserModel(
+                    id = uid,
                     email = email,
                     displayName = username
                 )

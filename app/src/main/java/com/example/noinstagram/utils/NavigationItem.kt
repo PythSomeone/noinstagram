@@ -36,10 +36,10 @@ fun Navigation(navController: NavHostController) {
             //FollowersUi()
         }
         composable(NavigationItem.Profile.route) {
-            UserProfileScreen()
+            UserProfileScreen(navController)
         }
-        composable("Edit screen") {
-            EditProfileScreen(navController)
+        composable("EditScreen") {
+            EditProfileScreen()
         }
     }
 }

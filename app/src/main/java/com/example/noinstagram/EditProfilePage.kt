@@ -29,20 +29,22 @@ import kotlinx.coroutines.delay
 
 @ExperimentalFoundationApi
 @Composable
-fun EditProfileScreen(navController: NavHostController) {
+fun EditProfileScreen() {
     val userState = remember {
         UsersRepository
     }
     var user = UserModel()
     var refreshing by remember { mutableStateOf(false) }
     userState.users.value.forEach(action = {
-        if (it.id == "123")
+        if (it.id == "uxjq0kpK8Ihdl4A4Ow2QCjbhTWz1") {
             user = it
+        }
     })
+
     Log.d("TAG", "$user")
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(4.dp))
-        EditProfileSection(user, navController)
+        EditProfileSection(user)
         Spacer(modifier = Modifier.height(25.dp))
         //refresh
         LaunchedEffect(refreshing) {

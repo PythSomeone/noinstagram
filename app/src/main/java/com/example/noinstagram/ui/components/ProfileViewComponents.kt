@@ -24,7 +24,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
+import com.example.noinstagram.EditProfileScreen
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.model.Post
 import com.example.noinstagram.model.UserModel
@@ -33,6 +36,7 @@ import com.example.noinstagram.ui.theme.EditProfileButtonColor
 @Composable
 fun ProfileSection(
     userModel: UserModel,
+    navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
     val minWidth = 95.dp
@@ -74,7 +78,9 @@ fun ProfileSection(
                     modifier = Modifier
                         .defaultMinSize(minWidth = minWidth)
                         .height(height),
-                    onClick = {},
+                    onClick = {
+                        navController.navigate("EditScreen")
+                    },
                     backgroundColor = EditProfileButtonColor,
                     shape = RoundedCornerShape(5.dp)
                 ) {
