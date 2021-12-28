@@ -23,14 +23,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.noinstagram.ui.theme.AddPostButtonColor
 import com.example.noinstagram.ui.theme.ChoosePhotoButtonColor
+import com.example.noinstagram.utils.NavigationItem
 import com.example.noinstagram.viewmodel.PostViewModel
-import java.io.File
 
 
 @Composable
 fun AddPostSection(
+    navController: NavController,
     modifier: Modifier = Modifier,
     viewModel: PostViewModel = viewModel(),
 ) {
@@ -46,9 +48,6 @@ fun AddPostSection(
         imageUri = uri
     }
     val context = LocalContext.current
-    var file by remember {
-        mutableStateOf<File?>(null)
-    }
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -139,9 +138,6 @@ fun AddPostSection(
                 Spacer(Modifier.height(20.dp))
                 if(imageUri != null){
                     Button(
-//                    enabled= imageUri.toString().isNotEmpty(),
-
-//                        enabled=!Uri.EMPTY.equals(imageUri),
                         onClick = {
                             Toast.makeText(
                                 context,
@@ -151,6 +147,7 @@ fun AddPostSection(
                             Log.d("TAG", "$imageUri")
                             viewModel.uploadImage(imageUri!!, description)
                             imageUri = null
+                            navController.navigate(NavigationItem.Home.route)
 
                         },
                         shape = RoundedCornerShape(6.dp),

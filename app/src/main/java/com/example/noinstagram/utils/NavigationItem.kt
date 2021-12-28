@@ -30,7 +30,7 @@ fun Navigation(navController: NavHostController) {
             ExploreScreen(navController)
         }
         composable(NavigationItem.AddPost.route) {
-            AddPostScreen()
+            AddPostScreen(navController)
         }
         composable(NavigationItem.Followers.route) {
             FollowingScreen(navController)

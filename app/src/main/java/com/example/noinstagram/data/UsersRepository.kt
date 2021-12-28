@@ -49,21 +49,24 @@ object UsersRepository {
         return userSnapshots
     }
 
-    fun followUser(uid: String) {
-        var we = Firebase.auth.currentUser?.uid?.let { getUser(it) }
-        var them = getUser(uid)
+    fun toggleFollow(
+        followerUid: String,
+        followedUid: String) {
+        var follower = getUser(followerUid)
+        var followed = getUser(followedUid)
 
-        if (we != null && them != null) {
-            if (!userIsFollowed(them.id!!)) {
-                we.following.add(them.id)
-                them.followers.add(we.id)
-            } else {
-                we.following.remove(them.id)
-                them.followers.remove(we.id)
+        if (follower != null && followed != null) {
+            if (!userIsFollowed(followed?.id!!)) {
+                follower.following.add(followed.id)
+                followed.followers.add(follower.id)
+            }
+            else {
+                follower.following.remove(followed.id)
+                followed.followers.remove(follower.id)
             }
             // Send snapshots to database
-            UserHandler.setUser(we)
-            UserHandler.setUser(them)
+            UserHandler.setUser(follower)
+            UserHandler.setUser(followed)
         }
     }
     fun getFollowers(uid: String): MutableList<UserModel> {
@@ -90,8 +93,7 @@ object UsersRepository {
         })
         return followers
     }
-
-    fun userIsFollowed(uid: String): Boolean {
+    private fun userIsFollowed(uid: String): Boolean {
         val currentUser = Firebase.auth.currentUser?.uid
         if (currentUser != null) {
             getUser(currentUser)?.following?.forEach(action = {
