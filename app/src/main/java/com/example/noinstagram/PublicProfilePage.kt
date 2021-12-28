@@ -1,7 +1,5 @@
 package com.example.noinstagram
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -25,13 +23,12 @@ fun PublicProfileScreen(id: String?, navController: NavHostController) {
         UsersRepository
     }
     val user = id?.let { userState.getUser(it) }
-    Log.i(TAG, "WTF = $user")
     val postState = remember {
         PostsRepository
     }
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(4.dp))
-        SelectedProfileSection(modifier = Modifier, postState, userState, user)
+        SelectedProfileSection(modifier = Modifier, postState = postState, user = user)
         Spacer(modifier = Modifier.height(25.dp))
         //refresh
         LaunchedEffect(refreshing) {

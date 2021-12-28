@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.data.PostsRepository
+import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.model.Post
 import com.example.noinstagram.ui.components.PostView
 import com.example.noinstagram.utils.Navigation
@@ -52,6 +53,10 @@ fun HomeScreen() {
 @Composable
 fun HomeScreenUi(scope: CoroutineScope, navController: NavHostController) {
     val posts by PostsRepository.posts
+    val filteredPosts =
+        posts.filter { it.user?.id == UsersRepository.getCurrentUser()?.following?.toString() }
+    //filter posts
+
     var refreshing by remember { mutableStateOf(false) }
     //refresh
     LaunchedEffect(refreshing) {

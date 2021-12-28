@@ -9,11 +9,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.data.PostsRepository
@@ -22,6 +24,7 @@ import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.imageview.ProfilePostView
 import com.example.noinstagram.ui.imageview.RoundImage
 import com.example.noinstagram.ui.theme.EditProfileButtonColor
+import com.example.noinstagram.viewmodel.FollowViewModel
 
 
 @ExperimentalFoundationApi
@@ -50,8 +53,8 @@ fun SelectedProfilePostSection(
 fun SelectedProfileSection(
     modifier: Modifier,
     postState: PostsRepository,
-    userState: UsersRepository,
-    user: UserModel?
+    user: UserModel?,
+    followViewModel: FollowViewModel = viewModel()
 ) {
     val minWidth = 95.dp
     val height = 30.dp
@@ -62,16 +65,18 @@ fun SelectedProfileSection(
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
         ) {
-            if (user != null) {
-                RoundImage(
-                    rememberImagePainter(user.image),
-                    modifier = Modifier
-                        .size(100.dp)
-                        .weight(3f)
-                )
-            }
+            RoundImage(
+                rememberImagePainter(user?.image),
+                modifier = Modifier
+                    .size(100.dp)
+                    .weight(3f)
+            )
             Spacer(modifier = Modifier.width(16.dp))
-            SelectedProfileStatSection(modifier = Modifier.weight(7f), userState, postState, user)
+            SelectedProfileStatSection(
+                modifier = Modifier.weight(7f),
+                postState = postState,
+                user = user
+            )
         }
 
         Row(
@@ -81,12 +86,10 @@ fun SelectedProfileSection(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Column(modifier = Modifier.weight(2f)) {
-                if (user != null) {
-                    ProfileDescription(
-                        displayName = user.displayName!!,
-                        description = user.description!!
-                    )
-                }
+                ProfileDescription(
+                    displayName = user?.displayName!!,
+                    description = user.description!!
+                )
             }
             Column(
                 modifier = Modifier.weight(1f),
@@ -97,20 +100,24 @@ fun SelectedProfileSection(
                         .defaultMinSize(minWidth = minWidth)
                         .height(height),
                     onClick = {
-                        if (user != null) {
-                            user.id?.let { userState.followUser(it) }
+                        user?.id?.let {
+                            followViewModel.followUser(
+                                UsersRepository.getCurrentUser()?.id!!,
+                                user.id!!
+                            )
                         }
+                        followViewModel.getFollowersCount(user?.id!!)
+                        followViewModel.getFollowingCount(user.id!!)
+                        followViewModel.checkIsFollowed(user.id!!)
                     },
                     backgroundColor = EditProfileButtonColor,
                     shape = RoundedCornerShape(5.dp)
                 ) {
-                    if (user != null) {
-                        if (user.id?.let { userState.userIsFollowed(it) } == true) {
-                            Text("Unfollow", color = Color.White)
-                        }
-                    } else {
-                        Text("Follow", color = Color.White)
-                    }
+                    followViewModel.checkIsFollowed(user?.id!!)
+                    Text(
+                        text = followViewModel.isFollowedText.collectAsState().value,
+                        color = Color.White
+                    )
                 }
             }
         }
@@ -121,14 +128,16 @@ fun SelectedProfileSection(
 @Composable
 fun SelectedProfileStatSection(
     modifier: Modifier = Modifier,
-    userState: UsersRepository,
     postState: PostsRepository,
-    user: UserModel?
+    user: UserModel?,
+    followViewModel: FollowViewModel = viewModel()
 ) {
-    val userId = user?.id
+    followViewModel.getFollowersCount(user?.id!!)
+    followViewModel.getFollowingCount(user.id!!)
+    val userId = user.id
     val postsCount = postState.getPostsForUser(userId!!).count()
-    val followersCount = userState.getFollowing(userId).count()
-    val followingCount = userState.getFollowers(userId).count()
+    val followersCount = followViewModel.followersCount.collectAsState().value
+    val followingCount = followViewModel.followingCount.collectAsState().value
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
@@ -139,11 +148,11 @@ fun SelectedProfileStatSection(
             text = "Posts"
         )
         ProfileStat(
-            numberText = followingCount.toString(),
+            numberText = followingCount,
             text = "Following"
         )
         ProfileStat(
-            numberText = followersCount.toString(),
+            numberText = followersCount,
             text = "Followers"
         )
     }

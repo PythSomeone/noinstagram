@@ -96,7 +96,14 @@ fun ListOfFollowing(userState: UsersRepository, currentUserUid: String?) {
                 },
                 trailing = {
                     FloatingActionButton(
-                        onClick = { following.id?.let { userState.followUser(it) } },
+                        onClick = {
+                            following.id?.let {
+                                userState.toggleFollow(
+                                    userState.getCurrentUser()?.id!!,
+                                    it
+                                )
+                            }
+                        },
                         backgroundColor = EditProfileButtonColor,
                         shape = RoundedCornerShape(5.dp)
                     ) {
