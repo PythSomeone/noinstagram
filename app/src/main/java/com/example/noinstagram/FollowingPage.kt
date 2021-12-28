@@ -26,6 +26,6 @@ fun FollowingScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.height(4.dp))
         FollowingToFollowersSection(navController)
         Spacer(modifier = Modifier.height(25.dp))
-        ListOfFollowing(userState, currentUserUid)
+        ListOfFollowing(userState, currentUserUid, navController)
     }
 }

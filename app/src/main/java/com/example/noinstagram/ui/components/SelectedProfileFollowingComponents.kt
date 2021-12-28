@@ -17,64 +17,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.ui.theme.EditProfileButtonColor
 import com.example.noinstagram.viewmodel.FollowViewModel
 
 
-@Composable
-fun FollowingToFollowersSection(navController: NavHostController) {
-    Row(
-        Modifier
-            .height(IntrinsicSize.Min)
-            .fillMaxWidth()
-            .padding(top = 15.dp, end = 30.dp),
-        horizontalArrangement = Arrangement.End
-    ) {
-        Text(
-            text = AnnotatedString("Following"),
-            style = MaterialTheme.typography.h5.copy(),
-            modifier = Modifier.padding(end = 5.dp)
-        )
-
-        Divider(
-            color = Color.Black,
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(1.dp)
-        )
-
-        ClickableText(
-            text = AnnotatedString("Followers"),
-            style = MaterialTheme.typography.h6.copy(),
-            onClick = { navController.navigate("FollowersPage") },
-            modifier = Modifier.padding(start = 5.dp)
-        )
-    }
-}
-
 @ExperimentalMaterialApi
 @Composable
-fun ListOfFollowing(
-    userState: UsersRepository,
-    currentUserUid: String?,
+fun ListOfFollowingSelectedProfile(
     navController: NavHostController,
+    uid: String?,
     followViewModel: FollowViewModel = viewModel()
 ) {
-    val following = currentUserUid?.let { userState.getFollowing(it) }!!.toList()
+    followViewModel.getFollowing(uid!!)
+    val following = followViewModel.following
     LazyColumn(
         Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         contentPadding = PaddingValues(top = 10.dp),
         reverseLayout = true
     ) {
-        items(following) { following ->
+        items(following.value) { following ->
             ListItem(
                 text = {
                     following.displayName?.let {
@@ -107,11 +74,11 @@ fun ListOfFollowing(
                         onClick = {
                             following.id?.let {
                                 followViewModel.followUser(
-                                    userState.getCurrentUser()?.id!!,
+                                    UsersRepository.getCurrentUser()?.id!!,
                                     it
                                 )
                             }
-                            following.id?.let { followViewModel.checkIsFollowed(it) }
+                            following.id?.let { followViewModel.checkIsFollowed(UsersRepository.getCurrentUser()?.id!!) }
                         },
                         backgroundColor = EditProfileButtonColor,
                         shape = RoundedCornerShape(5.dp)
@@ -140,13 +107,34 @@ fun ListOfFollowing(
     }
 }
 
-@ExperimentalMaterialApi
-@Preview
 @Composable
-fun FollowingPreview() {
-    ListOfFollowing(
-        userState = UsersRepository,
-        currentUserUid = "",
-        navController = rememberNavController()
-    )
+fun FollowingToFollowersSectionSelectedProfile(navController: NavHostController, uid: String?) {
+    Row(
+        Modifier
+            .height(IntrinsicSize.Min)
+            .fillMaxWidth()
+            .padding(top = 15.dp, end = 30.dp),
+        horizontalArrangement = Arrangement.End
+    ) {
+        ClickableText(
+            text = AnnotatedString("Following"),
+            style = MaterialTheme.typography.h5.copy(),
+            onClick = {},
+            modifier = Modifier.padding(end = 5.dp)
+        )
+
+        Divider(
+            color = Color.Black,
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(1.dp)
+        )
+
+        ClickableText(
+            text = AnnotatedString("Followers"),
+            style = MaterialTheme.typography.h6.copy(),
+            onClick = { navController.navigate("SelectedProfileFollowers/$uid") },
+            modifier = Modifier.padding(start = 5.dp)
+        )
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.noinstagram.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -26,6 +27,7 @@ import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.ui.imageview.ProfilePostView
 import com.example.noinstagram.ui.imageview.RoundImage
 import com.example.noinstagram.ui.theme.EditProfileButtonColor
+import com.example.noinstagram.utils.NavigationItem
 
 @Composable
 fun ProfileSection(
@@ -53,7 +55,7 @@ fun ProfileSection(
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
-            StatSection(modifier = Modifier.weight(7f), userState, postState)
+            StatSection(modifier = Modifier.weight(7f), userState, postState, navController)
         }
 
         Row(
@@ -98,7 +100,8 @@ fun ProfileSection(
 fun StatSection(
     modifier: Modifier = Modifier,
     userState: UsersRepository,
-    postState: PostsRepository
+    postState: PostsRepository,
+    navController: NavHostController
 ) {
     val currentUserId = userState.getCurrentUser()?.id
     val postsCount by remember {
@@ -128,11 +131,16 @@ fun StatSection(
         )
         ProfileStat(
             numberText = followingCount.toString(),
-            text = "Following"
+            text = "Following", modifier = Modifier.clickable {
+                navController.navigate(NavigationItem.Followers.route)
+            }
         )
         ProfileStat(
             numberText = followersCount.toString(),
-            text = "Followers"
+            text = "Followers",
+            modifier = Modifier.clickable {
+                navController.navigate("FollowersPage")
+            }
         )
     }
 }

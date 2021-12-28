@@ -1,6 +1,7 @@
 package com.example.noinstagram.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -54,6 +55,7 @@ fun SelectedProfileSection(
     modifier: Modifier,
     postState: PostsRepository,
     user: UserModel?,
+    navController: NavHostController,
     followViewModel: FollowViewModel = viewModel()
 ) {
     val minWidth = 95.dp
@@ -75,7 +77,8 @@ fun SelectedProfileSection(
             SelectedProfileStatSection(
                 modifier = Modifier.weight(7f),
                 postState = postState,
-                user = user
+                user = user,
+                navController
             )
         }
 
@@ -130,6 +133,7 @@ fun SelectedProfileStatSection(
     modifier: Modifier = Modifier,
     postState: PostsRepository,
     user: UserModel?,
+    navController: NavHostController,
     followViewModel: FollowViewModel = viewModel()
 ) {
     followViewModel.getFollowersCount(user?.id!!)
@@ -149,11 +153,17 @@ fun SelectedProfileStatSection(
         )
         ProfileStat(
             numberText = followingCount,
-            text = "Following"
+            text = "Following",
+            modifier.clickable {
+                navController.navigate("SelectedProfileFollowing/$userId")
+            }
         )
         ProfileStat(
             numberText = followersCount,
-            text = "Followers"
+            text = "Followers",
+            modifier.clickable {
+                navController.navigate("SelectedProfileFollowers/$userId")
+            }
         )
     }
 }

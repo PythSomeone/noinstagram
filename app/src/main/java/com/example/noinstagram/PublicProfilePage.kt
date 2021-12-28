@@ -28,7 +28,12 @@ fun PublicProfileScreen(id: String?, navController: NavHostController) {
     }
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(4.dp))
-        SelectedProfileSection(modifier = Modifier, postState = postState, user = user)
+        SelectedProfileSection(
+            modifier = Modifier,
+            postState = postState,
+            user = user,
+            navController
+        )
         Spacer(modifier = Modifier.height(25.dp))
         //refresh
         LaunchedEffect(refreshing) {

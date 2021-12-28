@@ -31,6 +31,27 @@ class FollowViewModel : ViewModel() {
     private val _isFollowedText = MutableStateFlow("Follow")
     val isFollowedText: StateFlow<String> = _isFollowedText
 
+    private val _isDeleted = MutableStateFlow(false)
+    val isDeleted: StateFlow<Boolean> = _isDeleted
+
+    private val _isDeletedText = MutableStateFlow("Delete")
+    val isDeletedText: StateFlow<String> = _isDeletedText
+
+    fun deleteUser() = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            loadingState.emit(LoadingState.LOADING)
+            if (isDeleted.value) {
+                _isDeleted.value = false
+                _isDeletedText.value = "Delete"
+            } else {
+                _isDeleted.value = true
+                _isDeletedText.value = "Undo"
+            }
+            loadingState.emit(LoadingState.LOADED)
+        } catch (e: Exception) {
+            loadingState.emit(LoadingState.error(e.localizedMessage))
+        }
+    }
 
     fun checkIsFollowed(uid: String) = viewModelScope.launch(Dispatchers.IO) {
         try {
@@ -49,6 +70,10 @@ class FollowViewModel : ViewModel() {
 
     fun getFollowers(uid: String) = viewModelScope.launch(Dispatchers.IO) {
         _followers.value = userRepo.getFollowers(uid)
+    }
+
+    fun getFollowing(uid: String) = viewModelScope.launch(Dispatchers.IO) {
+        _following.value = userRepo.getFollowing(uid)
     }
 
     fun getFollowersCount(uid: String) = viewModelScope.launch(Dispatchers.IO) {

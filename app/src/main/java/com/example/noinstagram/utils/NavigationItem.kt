@@ -57,5 +57,19 @@ fun Navigation(navController: NavHostController) {
                 navController
             )
         }
+        composable("SelectedProfileFollowers/{UserId}") { backstackEntry ->
+            SelectedProfileFollowersPage(
+                navController,
+                backstackEntry.arguments?.getString("UserId")
+
+            )
+        }
+        composable("SelectedProfileFollowing/{UserId}") { backstackEntry ->
+            SelectedProfileFollowingScreen(
+                navController,
+                backstackEntry.arguments?.getString("UserId")
+
+            )
+        }
     }
 }

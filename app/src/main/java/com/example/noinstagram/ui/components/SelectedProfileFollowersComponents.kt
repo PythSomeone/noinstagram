@@ -23,49 +23,17 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.ui.theme.EditProfileButtonColor
-import com.example.noinstagram.utils.NavigationItem
 import com.example.noinstagram.viewmodel.FollowViewModel
 
-@Composable
-fun FollowersToFollowingSection(navController: NavHostController) {
-    Row(
-        Modifier
-            .height(IntrinsicSize.Min)
-            .fillMaxWidth()
-            .padding(top = 15.dp, end = 30.dp),
-        horizontalArrangement = Arrangement.End
-    ) {
-        Text(
-            text = AnnotatedString("Followers"),
-            style = MaterialTheme.typography.h5.copy(),
-            modifier = Modifier.padding(end = 5.dp)
-        )
-
-        Divider(
-            color = Color.Black,
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(1.dp)
-        )
-
-        ClickableText(
-            text = AnnotatedString("Following"),
-            style = MaterialTheme.typography.h6.copy(),
-            onClick = { navController.navigate(NavigationItem.Followers.route) },
-            modifier = Modifier.padding(start = 5.dp)
-        )
-    }
-}
 
 @ExperimentalMaterialApi
 @Composable
-fun ListOfFollowers(
-    userState: UsersRepository,
-    currentUserUid: String?,
+fun ListOfSelectedProfileFollowers(
+    uid: String?,
     navController: NavHostController,
     followViewModel: FollowViewModel = viewModel()
 ) {
-    followViewModel.getFollowers(currentUserUid!!)
+    followViewModel.getFollowers(uid!!)
     val followers = followViewModel.followers.value
     LazyColumn(
         Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally,
@@ -106,38 +74,17 @@ fun ListOfFollowers(
                     Row {
                         FloatingActionButton(
                             onClick = {
-                                follower.id?.let {
-                                    followViewModel.followUser(
-                                        userState.getCurrentUser()?.id!!,
-                                        it
-                                    )
-                                }
-                                follower.id?.let { followViewModel.checkIsFollowed(it) }
+                                followViewModel.followUser(
+                                    uid,
+                                    UsersRepository.getCurrentUser()?.id!!
+                                )
+                                followViewModel.checkIsFollowed(UsersRepository.getCurrentUser()?.id!!)
                             },
                             backgroundColor = EditProfileButtonColor,
                             shape = RoundedCornerShape(5.dp)
                         ) {
                             Text(
                                 text = followViewModel.isFollowedText.collectAsState().value,
-                                color = Color.White
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(5.dp))
-                        FloatingActionButton(
-                            onClick = {
-                                follower.id?.let {
-                                    followViewModel.followUser(
-                                        it,
-                                        userState.getCurrentUser()?.id!!
-                                    )
-                                }
-                                followViewModel.deleteUser()
-                            },
-                            backgroundColor = EditProfileButtonColor,
-                            shape = RoundedCornerShape(5.dp)
-                        ) {
-                            Text(
-                                text = followViewModel.isDeletedText.collectAsState().value,
                                 color = Color.White
                             )
                         }
@@ -158,5 +105,36 @@ fun ListOfFollowers(
             )
 
         }
+    }
+}
+
+@Composable
+fun FollowersToFollowingSectionSelectedProfile(navController: NavHostController, uid: String?) {
+    Row(
+        Modifier
+            .height(IntrinsicSize.Min)
+            .fillMaxWidth()
+            .padding(top = 15.dp, end = 30.dp),
+        horizontalArrangement = Arrangement.End
+    ) {
+        Text(
+            text = AnnotatedString("Followers"),
+            style = MaterialTheme.typography.h5.copy(),
+            modifier = Modifier.padding(end = 5.dp)
+        )
+
+        Divider(
+            color = Color.Black,
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(1.dp)
+        )
+
+        ClickableText(
+            text = AnnotatedString("Following"),
+            style = MaterialTheme.typography.h6.copy(),
+            onClick = { navController.navigate("SelectedProfileFollowing/$uid") },
+            modifier = Modifier.padding(start = 5.dp)
+        )
     }
 }

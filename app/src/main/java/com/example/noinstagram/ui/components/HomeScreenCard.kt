@@ -90,11 +90,6 @@ fun PostView(
             )
 
         }
-        Text(
-            post.description!!,
-            Modifier.padding(end = 10.dp),
-            fontSize = 25.sp
-        )
         Spacer(modifier = Modifier.height(1.dp))
 
         PostFooter(post, onLikeToggle)
@@ -186,6 +181,11 @@ private fun PostFooterTextSection(post: Post) {
             bottom = 5.dp
         )
     ) {
+        Text(
+            text = "${post.user?.displayName}: ${post.description!!}",
+            Modifier.padding(end = 10.dp),
+            style = MaterialTheme.typography.subtitle2
+        )
         Text(
             "${post.userLikes.count()} likes",
             style = MaterialTheme.typography.subtitle2
