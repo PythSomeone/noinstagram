@@ -56,7 +56,7 @@ object UsersRepository {
         var followed = getUser(followedUid)
 
         if (follower != null && followed != null) {
-            if (!userIsFollowed(followed?.id!!)) {
+            if (!userIsFollowed(follower?.id!!, followed?.id!!)) {
                 follower.following.add(followed.id)
                 followed.followers.add(follower.id)
             }
@@ -93,13 +93,10 @@ object UsersRepository {
         })
         return followers
     }
-    private fun userIsFollowed(uid: String): Boolean {
-        val currentUser = Firebase.auth.currentUser?.uid
-        if (currentUser != null) {
-            getUser(currentUser)?.following?.forEach(action = {
-                if (it == uid) return true
-            })
-        }
+    private fun userIsFollowed(followerUid: String, followedUid: String): Boolean {
+        getUser(followerUid)?.following?.forEach(action = {
+            if (it == followedUid) return true
+        })
         return false
     }
 
