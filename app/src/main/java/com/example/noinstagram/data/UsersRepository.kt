@@ -56,10 +56,11 @@ object UsersRepository {
         var followed = getUser(followedUid)
 
         if (follower != null && followed != null) {
-            if (!userIsFollowed(followed.id!!)) {
+            if (!userIsFollowed(follower?.id!!, followed?.id!!)) {
                 follower.following.add(followed.id)
                 followed.followers.add(follower.id)
-            } else {
+            }
+            else {
                 follower.following.remove(followed.id)
                 followed.followers.remove(follower.id)
             }
@@ -73,30 +74,29 @@ object UsersRepository {
         getUser(uid)?.followers?.forEach(action = {
             if (it != null) {
                 val follower = getUser(it)!!
-                followers.add(follower)
+                if (follower != null) {
+                    followers.add(follower)
+                }
             }
         })
         return followers
     }
-
     fun getFollowing(uid: String): MutableList<UserModel> {
         val followers: MutableList<UserModel> = mutableListOf()
         getUser(uid)?.following?.forEach(action = {
             if (it != null) {
                 val follower = getUser(it)!!
-                followers.add(follower)
+                if (follower != null) {
+                    followers.add(follower)
+                }
             }
         })
         return followers
     }
-
-    fun userIsFollowed(uid: String): Boolean {
-        val currentUser = Firebase.auth.currentUser?.uid
-        if (currentUser != null) {
-            getUser(currentUser)?.following?.forEach(action = {
-                if (it == uid) return true
-            })
-        }
+    private fun userIsFollowed(followerUid: String, followedUid: String): Boolean {
+        getUser(followerUid)?.following?.forEach(action = {
+            if (it == followedUid) return true
+        })
         return false
     }
 
