@@ -100,7 +100,7 @@ fun ExplorePostSection(
         modifier = modifier
             .scale(1.01f)
     ) {
-        itemsIndexed(posts) { _, post ->
+        itemsIndexed(posts.asReversed()) { _, post ->
             ExplorePostView(post, navController)
             Spacer(modifier = Modifier.height(10.dp))
         }

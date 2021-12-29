@@ -1,25 +1,24 @@
 package com.example.noinstagram.ui.components
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,8 +26,10 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.data.UsersRepository
-import com.example.noinstagram.model.Post
+import com.example.noinstagram.ui.imageview.ProfilePostView
+import com.example.noinstagram.ui.imageview.RoundImage
 import com.example.noinstagram.ui.theme.EditProfileButtonColor
+import com.example.noinstagram.utils.NavigationItem
 
 @Composable
 fun ProfileSection(
@@ -56,7 +57,7 @@ fun ProfileSection(
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
-            StatSection(modifier = Modifier.weight(7f), userState, postState)
+            StatSection(modifier = Modifier.weight(7f), userState, postState, navController)
         }
 
         Row(
@@ -95,50 +96,53 @@ fun ProfileSection(
     }
 }
 
-@Composable
-fun RoundImage(
-    image: Painter,
-    modifier: Modifier = Modifier
-) {
-    Image(
-        painter = image,
-        contentDescription = null,
-        modifier = modifier
-            .aspectRatio(1f, matchHeightConstraintsFirst = true)
-            .border(
-                width = 1.dp,
-                color = Color.LightGray,
-                shape = CircleShape
-            )
-            .padding(3.dp)
-            .clip(CircleShape),
-        contentScale = ContentScale.Crop
-    )
-}
+
 
 @Composable
 fun StatSection(
     modifier: Modifier = Modifier,
     userState: UsersRepository,
-    postState: PostsRepository
+    postState: PostsRepository,
+    navController: NavHostController
 ) {
+    val currentUserId = userState.getCurrentUser()?.id
+    val postsCount by remember {
+        mutableStateOf(
+            postState.posts.value.filter { f -> f.user?.id == currentUserId }.count()
+        )
+    }
+    val followersCount by remember {
+        mutableStateOf(
+            userState.getFollowers(currentUserId!!).count()
+        )
+    }
+    val followingCount by remember {
+        mutableStateOf(
+            userState.getFollowing(currentUserId!!).count()
+        )
+    }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
         modifier = modifier
     ) {
-        val currentUserId = userState.getCurrentUser()?.id
+
         ProfileStat(
-            numberText = postState.getPostsForUser(currentUserId!!).count().toString(),
+            numberText = postsCount.toString(),
             text = "Posts"
         )
         ProfileStat(
-            numberText = userState.getFollowing(currentUserId).count().toString(),
-            text = "Following"
+            numberText = followingCount.toString(),
+            text = "Following", modifier = Modifier.clickable {
+                navController.navigate(NavigationItem.Followers.route)
+            }
         )
         ProfileStat(
-            numberText = userState.getFollowers(currentUserId).count().toString(),
-            text = "Followers"
+            numberText = followersCount.toString(),
+            text = "Followers",
+            modifier = Modifier.clickable {
+                navController.navigate("FollowersPage")
+            }
         )
     }
 }
@@ -199,7 +203,8 @@ fun PostSection(
     navController: NavHostController
 ) {
     val currentUserUid = userState.getCurrentUser()?.id
-    val posts = postState.getPostsForUser(currentUserUid!!)
+    val posts = postState.posts.value.filter { f -> f.user?.id == currentUserUid }.asReversed()
+    Log.i(TAG, "Posts= $posts")
     LazyVerticalGrid(
         cells = GridCells.Fixed(3),
         modifier = modifier
@@ -210,22 +215,4 @@ fun PostSection(
             Spacer(modifier = Modifier.height(10.dp))
         }
     }
-}
-
-@Composable
-fun ProfilePostView(post: Post, navController: NavHostController) {
-    Image(
-        painter = rememberImagePainter(post.image),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = Modifier
-            .aspectRatio(1f)
-            .border(
-                width = 1.dp,
-                color = Color.White
-            )
-            .padding(3.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .clickable { navController.navigate("Post/${post.id}") }
-    )
 }

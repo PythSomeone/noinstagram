@@ -19,14 +19,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.ui.theme.NoInstagramTopBarTextColor
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 @Composable
 fun TopAppBar(
     backgroundColor: Color,
-    title: String
+    title: String,
+    navController: NavHostController
 ) {
     val userState = remember { UsersRepository }
     val expanded = remember { mutableStateOf(false) }
@@ -84,6 +88,8 @@ fun TopAppBar(
                                 onDismissRequest = { expanded.value = false },
                             ) {
                                 DropdownMenuItem(onClick = {
+                                    Firebase.auth.signOut()
+                                    navController.navigate("FirstPage")
                                     expanded.value = false
                                 }) {
                                     Icon(

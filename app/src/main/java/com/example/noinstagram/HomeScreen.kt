@@ -7,16 +7,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.model.Post
-import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.components.PostView
 import com.example.noinstagram.utils.Navigation
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -26,9 +27,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
-fun HomeScreen(user: UserModel) {
+fun HomeScreen(homeNavController: NavHostController) {
     val navController = rememberNavController()
     val scaffoldState = rememberScaffoldState()
     Scaffold(
@@ -36,7 +38,8 @@ fun HomeScreen(user: UserModel) {
         topBar = {
             TopAppBar(
                 backgroundColor = Color.White,
-                title = "No_Instagram"
+                title = "No_Instagram",
+                homeNavController
             )
         },
         bottomBar = { BottomNavigationBar(navController) },
@@ -48,8 +51,15 @@ fun HomeScreen(user: UserModel) {
 }
 
 @Composable
-fun HomeScreenUi(scope: CoroutineScope) {
+fun HomeScreenUi(scope: CoroutineScope, navController: NavHostController) {
     val posts by PostsRepository.posts
+//    val filteredPosts =
+//        posts.asSequence().filter { f->
+//            UsersRepository.getCurrentUser()?.following!!.none { s->
+//                s == f.id
+//            }
+//        }.map { f-> f.id }.toList()
+
     var refreshing by remember { mutableStateOf(false) }
     //refresh
     LaunchedEffect(refreshing) {
@@ -70,14 +80,15 @@ fun HomeScreenUi(scope: CoroutineScope) {
         }
     ) {
         LazyColumn(modifier = Modifier.padding(top = 10.dp)) {
-            itemsIndexed(posts) { _, post ->
+            itemsIndexed(posts.asReversed().distinct()) { _, post ->
                 Post(
                     post,
                     onLikeToggle = {
                         scope.launch {
                             PostsRepository.toggleLike(post.id!!)
                         }
-                    }
+                    },
+                    navController = navController
                 )
                 Spacer(modifier = Modifier.height(10.dp))
             }
@@ -89,7 +100,8 @@ fun HomeScreenUi(scope: CoroutineScope) {
 @Composable
 fun Post(
     post: Post,
-    onLikeToggle: (Post) -> Unit
+    onLikeToggle: (Post) -> Unit,
+    navController: NavHostController
 ) {
-    PostView(post, onLikeToggle)
+    PostView(post, onLikeToggle, navController)
 }

@@ -27,11 +27,14 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.R
 import com.example.noinstagram.model.Post
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.buttons.AnimLikeButton
+import com.example.noinstagram.ui.imageview.RoundImage
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -40,13 +43,14 @@ import kotlin.math.sin
 @Composable
 fun PostView(
     post: Post,
-    onLikeToggle: (Post) -> Unit
+    onLikeToggle: (Post) -> Unit,
+    navController: NavHostController
 ) {
     Column {
         var offset by remember { mutableStateOf(Offset.Zero) }
         var zoom by remember { mutableStateOf(1f) }
         var angle by remember { mutableStateOf(0f) }
-        PostHeader(post)
+        PostHeader(post, navController)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -87,11 +91,6 @@ fun PostView(
             )
 
         }
-        Text(
-            post.description!!,
-            Modifier.padding(end = 10.dp),
-            fontSize = 25.sp
-        )
         Spacer(modifier = Modifier.height(1.dp))
 
         PostFooter(post, onLikeToggle)
@@ -108,7 +107,7 @@ fun Offset.rotateBy(angle: Float): Offset {
 }
 
 @Composable
-private fun PostHeader(post: Post) {
+private fun PostHeader(post: Post, navController: NavHostController) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -124,14 +123,17 @@ private fun PostHeader(post: Post) {
                     .background(color = Color.White, shape = CircleShape)
                     .clip(CircleShape)
             ) {
-                Image(
-                    painter = rememberImagePainter(post.user?.image),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize()
+                RoundImage(
+                    rememberImagePainter(post.user?.image),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable { navController.navigate("PublicProfile/${post.user?.id}") }
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
-            Text(text = post.user!!.displayName!!, style = MaterialTheme.typography.subtitle2)
+            Text(text = post.user!!.displayName!!,
+                style = MaterialTheme.typography.subtitle2,
+                modifier = Modifier.clickable { navController.navigate("PublicProfile/${post.user.id}") })
         }
         Icon(Icons.Filled.MoreVert, "")
     }
@@ -181,6 +183,11 @@ private fun PostFooterTextSection(post: Post) {
             bottom = 5.dp
         )
     ) {
+        Text(
+            text = "${post.user?.displayName}: ${post.description!!}",
+            Modifier.padding(end = 10.dp),
+            style = MaterialTheme.typography.subtitle2
+        )
         Text(
             "${post.userLikes.count()} likes",
             style = MaterialTheme.typography.subtitle2
@@ -241,5 +248,6 @@ fun PostViewPreview() {
             image = "",
             user = UserModel(email = "abc", displayName = "kamil"),
             timeStamp = 100
-        ), onLikeToggle = {})
+        ), onLikeToggle = {}, navController = rememberNavController()
+    )
 }

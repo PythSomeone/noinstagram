@@ -1,6 +1,7 @@
 package com.example.noinstagram.utils
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
@@ -17,12 +18,13 @@ sealed class NavigationItem(var route: String, var icon: Int, var title: String)
     object Profile : NavigationItem("profile", R.drawable.ic_baseline_person_24, "Profile")
 }
 
+@ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
 fun Navigation(navController: NavHostController) {
     NavHost(navController, startDestination = NavigationItem.Home.route) {
         composable(NavigationItem.Home.route) {
-            HomeScreenUi(scope = rememberCoroutineScope())
+            HomeScreenUi(scope = rememberCoroutineScope(), navController)
         }
         composable(NavigationItem.Search.route) {
             ExploreScreen(navController)
@@ -31,19 +33,42 @@ fun Navigation(navController: NavHostController) {
             AddPostScreen(navController)
         }
         composable(NavigationItem.Followers.route) {
-            //FollowersUi()
+            FollowingScreen(navController)
         }
         composable(NavigationItem.Profile.route) {
             UserProfileScreen(navController)
         }
         composable("Post/{PostId}") { backstackEntry ->
             PostDetailsPage(
-                backstackEntry.arguments?.getString("PostId")
+                backstackEntry.arguments?.getString("PostId"),
+                navController
             )
-            UserProfileScreen(navController)
         }
         composable("EditScreen") {
             EditProfileScreen(navController)
+        }
+        composable("FollowersPage") {
+            FollowersPage(navController)
+        }
+        composable("PublicProfile/{UserId}") { backstackEntry ->
+            PublicProfileScreen(
+                backstackEntry.arguments?.getString("UserId"),
+                navController
+            )
+        }
+        composable("SelectedProfileFollowers/{UserId}") { backstackEntry ->
+            SelectedProfileFollowersPage(
+                navController,
+                backstackEntry.arguments?.getString("UserId")
+
+            )
+        }
+        composable("SelectedProfileFollowing/{UserId}") { backstackEntry ->
+            SelectedProfileFollowingScreen(
+                navController,
+                backstackEntry.arguments?.getString("UserId")
+
+            )
         }
     }
 }

@@ -5,10 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.theme.NoInstagramTheme
 import com.example.noinstagram.utils.database.PostHandler
 import com.example.noinstagram.utils.database.UserHandler
@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 class MainActivity : ComponentActivity() {
     private val authViewModel: AuthViewModel by viewModels()
 
+    @ExperimentalMaterialApi
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +28,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             NoInstagramTheme {
                 val navController = rememberNavController()
-                val userModel = FirebaseAuth.getInstance().currentUser
-                val user = UserModel(userModel?.email, userModel?.displayName)
                 NavHost(
                     navController,
                     if (FirebaseAuth.getInstance().currentUser != null) {
@@ -43,7 +42,7 @@ class MainActivity : ComponentActivity() {
                         LoginScreen(navController)
                     }
                     composable("HomePage") {
-                        HomeScreen(user)
+                        HomeScreen(navController)
                     }
                     composable("RegisterPage") {
                         RegisterScreen(navController)

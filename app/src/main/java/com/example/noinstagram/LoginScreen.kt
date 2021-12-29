@@ -34,8 +34,6 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
         painterResource(id = R.drawable.ic_visibility_on)
     else
         painterResource(id = R.drawable.ic_visibility_off)
-        
-    val state by viewModel.loadingState.collectAsState()
 
     Surface(
         color = MaterialTheme.colors.primary,

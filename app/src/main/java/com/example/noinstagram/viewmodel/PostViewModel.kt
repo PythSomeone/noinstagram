@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class PostViewModel : ViewModel() {
-    val loadingState = MutableStateFlow(LoadingState.IDLE)
+    private val loadingState = MutableStateFlow(LoadingState.IDLE)
     private val postHandler = PostHandler
 
     fun uploadImage(uri: Uri, description: String?) = viewModelScope.launch {
@@ -25,7 +25,6 @@ class PostViewModel : ViewModel() {
             loadingState.emit(LoadingState.error(e.localizedMessage))
         }
     }
-
 
 
 }
