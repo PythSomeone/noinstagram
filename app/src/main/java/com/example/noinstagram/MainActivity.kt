@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
                         LoginScreen(navController)
                     }
                     composable("HomePage") {
-                        HomeScreen()
+                        HomeScreen(navController)
                     }
                     composable("RegisterPage") {
                         RegisterScreen(navController)

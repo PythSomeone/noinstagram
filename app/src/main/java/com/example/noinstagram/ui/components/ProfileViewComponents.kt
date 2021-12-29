@@ -1,5 +1,7 @@
 package com.example.noinstagram.ui.components
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -106,17 +108,17 @@ fun StatSection(
     val currentUserId = userState.getCurrentUser()?.id
     val postsCount by remember {
         mutableStateOf(
-            postState.getPostsForUser(currentUserId!!).count()
+            postState.posts.value.filter { f -> f.user?.id == currentUserId }.count()
         )
     }
     val followersCount by remember {
         mutableStateOf(
-            userState.getFollowing(currentUserId!!).count()
+            userState.getFollowers(currentUserId!!).count()
         )
     }
     val followingCount by remember {
         mutableStateOf(
-            userState.getFollowers(currentUserId!!).count()
+            userState.getFollowing(currentUserId!!).count()
         )
     }
     Row(
@@ -201,7 +203,8 @@ fun PostSection(
     navController: NavHostController
 ) {
     val currentUserUid = userState.getCurrentUser()?.id
-    val posts = postState.getPostsForUser(currentUserUid!!)
+    val posts = postState.posts.value.filter { f -> f.user?.id == currentUserUid }.asReversed()
+    Log.i(TAG, "Posts= $posts")
     LazyVerticalGrid(
         cells = GridCells.Fixed(3),
         modifier = modifier

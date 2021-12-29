@@ -27,5 +27,4 @@ class PostViewModel : ViewModel() {
     }
 
 
-
 }

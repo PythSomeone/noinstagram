@@ -56,11 +56,10 @@ object UsersRepository {
         var followed = getUser(followedUid)
 
         if (follower != null && followed != null) {
-            if (!userIsFollowed(follower?.id!!, followed?.id!!)) {
+            if (!userIsFollowed(follower.id!!, followed.id!!)) {
                 follower.following.add(followed.id)
                 followed.followers.add(follower.id)
-            }
-            else {
+            } else {
                 follower.following.remove(followed.id)
                 followed.followers.remove(follower.id)
             }
@@ -81,6 +80,7 @@ object UsersRepository {
         })
         return followers
     }
+
     fun getFollowing(uid: String): MutableList<UserModel> {
         val followers: MutableList<UserModel> = mutableListOf()
         getUser(uid)?.following?.forEach(action = {
@@ -93,7 +93,8 @@ object UsersRepository {
         })
         return followers
     }
-    private fun userIsFollowed(followerUid: String, followedUid: String): Boolean {
+
+    fun userIsFollowed(followerUid: String, followedUid: String): Boolean {
         getUser(followerUid)?.following?.forEach(action = {
             if (it == followedUid) return true
         })

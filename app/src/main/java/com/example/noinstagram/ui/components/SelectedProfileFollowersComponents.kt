@@ -1,6 +1,5 @@
 package com.example.noinstagram.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.data.UsersRepository
+import com.example.noinstagram.ui.imageview.RoundImage
 import com.example.noinstagram.ui.theme.EditProfileButtonColor
 import com.example.noinstagram.viewmodel.FollowViewModel
 
@@ -59,9 +59,8 @@ fun ListOfSelectedProfileFollowers(
                             .background(color = Color.White, shape = CircleShape)
                             .clip(CircleShape)
                     ) {
-                        Image(
-                            painter = rememberImagePainter(follower.image),
-                            contentDescription = null,
+                        RoundImage(
+                            rememberImagePainter(follower.image),
                             modifier = Modifier
                                 .fillMaxSize()
                                 .clickable {
@@ -72,21 +71,24 @@ fun ListOfSelectedProfileFollowers(
                 },
                 trailing = {
                     Row {
-                        FloatingActionButton(
-                            onClick = {
-                                followViewModel.followUser(
-                                    uid,
-                                    UsersRepository.getCurrentUser()?.id!!
+                        val currentUserUid = UsersRepository.getCurrentUser()?.id
+                        if (follower.id != currentUserUid) {
+                            FloatingActionButton(
+                                onClick = {
+                                    followViewModel.followUser(
+                                        follower.id!!,
+                                        currentUserUid!!
+                                    )
+                                    followViewModel.checkIsFollowed(currentUserUid, follower.id!!)
+                                },
+                                backgroundColor = EditProfileButtonColor,
+                                shape = RoundedCornerShape(5.dp)
+                            ) {
+                                Text(
+                                    text = followViewModel.isFollowedText.collectAsState().value,
+                                    color = Color.White
                                 )
-                                followViewModel.checkIsFollowed(UsersRepository.getCurrentUser()?.id!!)
-                            },
-                            backgroundColor = EditProfileButtonColor,
-                            shape = RoundedCornerShape(5.dp)
-                        ) {
-                            Text(
-                                text = followViewModel.isFollowedText.collectAsState().value,
-                                color = Color.White
-                            )
+                            }
                         }
                     }
 

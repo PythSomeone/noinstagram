@@ -53,20 +53,21 @@ class FollowViewModel : ViewModel() {
         }
     }
 
-    fun checkIsFollowed(uid: String) = viewModelScope.launch(Dispatchers.IO) {
-        try {
-            loadingState.emit(LoadingState.LOADING)
-            _isFollowed.value = userRepo.userIsFollowed(uid)
-            if (_isFollowed.value) {
-                _isFollowedText.value = "Unfollow"
-            } else {
-                _isFollowedText.value = "Follow"
+    fun checkIsFollowed(followerUid: String, followedUid: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                loadingState.emit(LoadingState.LOADING)
+                _isFollowed.value = userRepo.userIsFollowed(followerUid, followedUid)
+                if (_isFollowed.value) {
+                    _isFollowedText.value = "Unfollow"
+                } else {
+                    _isFollowedText.value = "Follow"
+                }
+                loadingState.emit(LoadingState.LOADED)
+            } catch (e: Exception) {
+                loadingState.emit(LoadingState.error(e.localizedMessage))
             }
-            loadingState.emit(LoadingState.LOADED)
-        } catch (e: Exception) {
-            loadingState.emit(LoadingState.error(e.localizedMessage))
         }
-    }
 
     fun getFollowers(uid: String) = viewModelScope.launch(Dispatchers.IO) {
         _followers.value = userRepo.getFollowers(uid)

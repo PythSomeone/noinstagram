@@ -34,6 +34,7 @@ import com.example.noinstagram.R
 import com.example.noinstagram.model.Post
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.buttons.AnimLikeButton
+import com.example.noinstagram.ui.imageview.RoundImage
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -122,10 +123,11 @@ private fun PostHeader(post: Post, navController: NavHostController) {
                     .background(color = Color.White, shape = CircleShape)
                     .clip(CircleShape)
             ) {
-                Image(
-                    painter = rememberImagePainter(post.user?.image),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize()
+                RoundImage(
+                    rememberImagePainter(post.user?.image),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable { navController.navigate("PublicProfile/${post.user?.id}") }
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))

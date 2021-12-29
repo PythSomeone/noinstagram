@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.data.PostsRepository
-import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.model.Post
 import com.example.noinstagram.ui.components.PostView
 import com.example.noinstagram.utils.Navigation
@@ -31,7 +30,7 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
-fun HomeScreen() {
+fun HomeScreen(homeNavController: NavHostController) {
     val navController = rememberNavController()
     val scaffoldState = rememberScaffoldState()
     Scaffold(
@@ -39,7 +38,8 @@ fun HomeScreen() {
         topBar = {
             TopAppBar(
                 backgroundColor = Color.White,
-                title = "No_Instagram"
+                title = "No_Instagram",
+                homeNavController
             )
         },
         bottomBar = { BottomNavigationBar(navController) },
@@ -53,9 +53,12 @@ fun HomeScreen() {
 @Composable
 fun HomeScreenUi(scope: CoroutineScope, navController: NavHostController) {
     val posts by PostsRepository.posts
-    val filteredPosts =
-        posts.filter { it.user?.id == UsersRepository.getCurrentUser()?.following?.toString() }
-    //filter posts
+//    val filteredPosts =
+//        posts.asSequence().filter { f->
+//            UsersRepository.getCurrentUser()?.following!!.none { s->
+//                s == f.id
+//            }
+//        }.map { f-> f.id }.toList()
 
     var refreshing by remember { mutableStateOf(false) }
     //refresh
@@ -77,7 +80,7 @@ fun HomeScreenUi(scope: CoroutineScope, navController: NavHostController) {
         }
     ) {
         LazyColumn(modifier = Modifier.padding(top = 10.dp)) {
-            itemsIndexed(posts.asReversed()) { _, post ->
+            itemsIndexed(posts.asReversed().distinct()) { _, post ->
                 Post(
                     post,
                     onLikeToggle = {

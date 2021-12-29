@@ -1,6 +1,5 @@
 package com.example.noinstagram.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.data.UsersRepository
+import com.example.noinstagram.ui.imageview.RoundImage
 import com.example.noinstagram.ui.theme.EditProfileButtonColor
 import com.example.noinstagram.utils.NavigationItem
 import com.example.noinstagram.viewmodel.FollowViewModel
@@ -91,9 +91,8 @@ fun ListOfFollowers(
                             .background(color = Color.White, shape = CircleShape)
                             .clip(CircleShape)
                     ) {
-                        Image(
-                            painter = rememberImagePainter(follower.image),
-                            contentDescription = null,
+                        RoundImage(
+                            rememberImagePainter(follower.image),
                             modifier = Modifier
                                 .fillMaxSize()
                                 .clickable {
@@ -112,7 +111,12 @@ fun ListOfFollowers(
                                         it
                                     )
                                 }
-                                follower.id?.let { followViewModel.checkIsFollowed(it) }
+                                follower.id?.let {
+                                    followViewModel.checkIsFollowed(
+                                        it,
+                                        currentUserUid
+                                    )
+                                }
                             },
                             backgroundColor = EditProfileButtonColor,
                             shape = RoundedCornerShape(5.dp)

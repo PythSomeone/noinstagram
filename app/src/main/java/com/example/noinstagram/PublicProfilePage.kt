@@ -35,7 +35,7 @@ fun PublicProfileScreen(id: String?, navController: NavHostController) {
             navController
         )
         Spacer(modifier = Modifier.height(25.dp))
-        //refresh
+
         LaunchedEffect(refreshing) {
             if (refreshing) {
                 delay(2000)

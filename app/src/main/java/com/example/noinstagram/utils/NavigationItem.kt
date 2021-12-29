@@ -43,7 +43,6 @@ fun Navigation(navController: NavHostController) {
                 backstackEntry.arguments?.getString("PostId"),
                 navController
             )
-            UserProfileScreen(navController)
         }
         composable("EditScreen") {
             EditProfileScreen(navController)

@@ -37,7 +37,7 @@ fun SelectedProfilePostSection(
     user: UserModel?
 ) {
     val selectedUserUid = user?.id
-    val posts = postState.getPostsForUser(selectedUserUid!!)
+    val posts = postState.posts.value.filter { f -> f.user?.id == selectedUserUid }.asReversed()
     LazyVerticalGrid(
         cells = GridCells.Fixed(3),
         modifier = modifier
@@ -98,33 +98,36 @@ fun SelectedProfileSection(
                 modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                FloatingActionButton(
-                    modifier = Modifier
-                        .defaultMinSize(minWidth = minWidth)
-                        .height(height),
-                    onClick = {
-                        user?.id?.let {
-                            followViewModel.followUser(
-                                UsersRepository.getCurrentUser()?.id!!,
-                                user.id!!
-                            )
-                        }
-                        followViewModel.getFollowersCount(user?.id!!)
-                        followViewModel.getFollowingCount(user.id!!)
-                        followViewModel.checkIsFollowed(user.id!!)
-                    },
-                    backgroundColor = EditProfileButtonColor,
-                    shape = RoundedCornerShape(5.dp)
-                ) {
-                    followViewModel.checkIsFollowed(user?.id!!)
-                    Text(
-                        text = followViewModel.isFollowedText.collectAsState().value,
-                        color = Color.White
-                    )
+                val currentUserUid = UsersRepository.getCurrentUser()?.id
+                if (user?.id != currentUserUid) {
+                    FloatingActionButton(
+                        modifier = Modifier
+                            .defaultMinSize(minWidth = minWidth)
+                            .height(height),
+                        onClick = {
+                            user?.id?.let {
+                                followViewModel.followUser(
+                                    currentUserUid!!,
+                                    user.id!!
+                                )
+                            }
+                            followViewModel.getFollowersCount(user?.id!!)
+                            followViewModel.getFollowingCount(user.id!!)
+                            followViewModel.checkIsFollowed(currentUserUid!!, user.id!!)
+                        },
+                        backgroundColor = EditProfileButtonColor,
+                        shape = RoundedCornerShape(5.dp)
+                    ) {
+                        followViewModel.checkIsFollowed(currentUserUid!!, user?.id!!)
+                        Text(
+                            text = followViewModel.isFollowedText.collectAsState().value,
+                            color = Color.White
+                        )
+                    }
                 }
+
             }
         }
-
     }
 }
 
@@ -139,7 +142,7 @@ fun SelectedProfileStatSection(
     followViewModel.getFollowersCount(user?.id!!)
     followViewModel.getFollowingCount(user.id!!)
     val userId = user.id
-    val postsCount = postState.getPostsForUser(userId!!).count()
+    val postsCount = postState.posts.value.filter { f -> f.user?.id == userId }.count()
     val followersCount = followViewModel.followersCount.collectAsState().value
     val followingCount = followViewModel.followingCount.collectAsState().value
     Row(
