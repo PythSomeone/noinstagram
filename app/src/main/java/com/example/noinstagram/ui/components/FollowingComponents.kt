@@ -106,14 +106,14 @@ fun ListOfFollowing(
                         onClick = {
                             following.id?.let {
                                 followViewModel.followUser(
-                                    userState.getCurrentUser()?.id!!,
+                                    currentUserUid,
                                     it
                                 )
                             }
                             following.id?.let {
                                 followViewModel.checkIsFollowed(
                                     currentUserUid,
-                                    following.id!!
+                                    it
                                 )
                             }
                         },
