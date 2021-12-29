@@ -53,17 +53,9 @@ fun HomeScreen(homeNavController: NavHostController) {
 
 @Composable
 fun HomeScreenUi(scope: CoroutineScope, navController: NavHostController) {
-//    val posts by PostsRepository.posts
-//    val filteredPosts =
-//        posts.asSequence().filter { f->
-//            UsersRepository.getCurrentUser()?.following!!.none { s->
-//                s == f.id
-//            }
-//        }.map { f-> f.id }.toList()
-    val posts = PostsRepository.posts.value.filter { f
-        ->
-        UsersRepository.users.value.any { s ->
-            s.id == f.id
+    val posts = PostsRepository.posts.value.filter { f ->
+        UsersRepository.getCurrentUser()?.following!!.any { s ->
+            s == f.user?.id
         }
     }
 
@@ -93,6 +85,7 @@ fun HomeScreenUi(scope: CoroutineScope, navController: NavHostController) {
                     onLikeToggle = {
                         scope.launch {
                             PostsRepository.toggleLike(post.id!!)
+                            refreshing = true
                         }
                     },
                     navController = navController

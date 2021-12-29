@@ -113,14 +113,15 @@ fun ListOfFollowers(
                                 }
                                 follower.id?.let {
                                     followViewModel.checkIsFollowed(
-                                        it,
-                                        currentUserUid
+                                        currentUserUid,
+                                        it
                                     )
                                 }
                             },
                             backgroundColor = EditProfileButtonColor,
                             shape = RoundedCornerShape(5.dp)
                         ) {
+                            followViewModel.checkIsFollowed(currentUserUid, follower.id!!)
                             Text(
                                 text = followViewModel.isFollowedText.collectAsState().value,
                                 color = Color.White
