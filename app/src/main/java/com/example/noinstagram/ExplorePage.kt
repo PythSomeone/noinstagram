@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -22,7 +23,7 @@ import kotlinx.coroutines.delay
 @ExperimentalFoundationApi
 @Composable
 fun ExploreScreen(navController: NavHostController) {
-    var value by remember { mutableStateOf("") }
+    var value = remember { mutableStateOf(TextFieldValue("")) }
     val view = LocalView.current
     var refreshing by remember { mutableStateOf(false) }
     //refresh
@@ -46,7 +47,7 @@ fun ExploreScreen(navController: NavHostController) {
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(4.dp))
             SearchSection(
-                value = value,
+                textValue = value,
                 label = "",
                 onDoneActionClick =
                 {
@@ -54,9 +55,10 @@ fun ExploreScreen(navController: NavHostController) {
                 },
                 onValueChanged = {},
                 onClearClick = {
-                    value = ""
+                    value = value
                     view.clearFocus()
                 },
+                navController = navController
             )
             Spacer(modifier = Modifier.height(25.dp))
             ExplorePostSection(navController)
