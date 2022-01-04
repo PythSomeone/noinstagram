@@ -9,10 +9,7 @@ import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.ripple.rememberRipple
@@ -24,27 +21,30 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.R
+import com.example.noinstagram.data.UsersRepository
+import com.example.noinstagram.model.CommentModel
 import com.example.noinstagram.model.Post
-import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.ui.buttons.AnimLikeButton
 import com.example.noinstagram.ui.imageview.RoundImage
+import com.example.noinstagram.viewmodel.PostViewModel
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
 
+@ExperimentalMaterialApi
 @Composable
 fun PostView(
     post: Post,
     onLikeToggle: (Post) -> Unit,
-    navController: NavHostController
+    navController: NavHostController,
+    refreshing: MutableState<Boolean>
 ) {
     Column {
         var offset by remember { mutableStateOf(Offset.Zero) }
@@ -93,7 +93,7 @@ fun PostView(
         }
         Spacer(modifier = Modifier.height(1.dp))
 
-        PostFooter(post, onLikeToggle)
+        PostFooter(post, onLikeToggle, refreshing, navController)
         Divider()
     }
 }
@@ -139,21 +139,24 @@ private fun PostHeader(post: Post, navController: NavHostController) {
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 private fun PostFooter(
     post: Post,
-    onLikeToggle: (Post) -> Unit
+    onLikeToggle: (Post) -> Unit,
+    refreshing: MutableState<Boolean>,
+    navController: NavHostController
 ) {
-    PostFooterIconSection(post, onLikeToggle)
-    PostFooterTextSection(post)
+    PostFooterIconSection(post, onLikeToggle, refreshing)
+    PostFooterTextSection(post, navController)
 }
 
 @Composable
 private fun PostFooterIconSection(
     post: Post,
-    onLikeToggle: (Post) -> Unit
+    onLikeToggle: (Post) -> Unit,
+    refreshing: MutableState<Boolean>
 ) {
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -166,16 +169,14 @@ private fun PostFooterIconSection(
         ) {
             AnimLikeButton(post, onLikeToggle)
 
-            PostIconButton {
-                Icon(ImageBitmap.imageResource(id = R.drawable.ic_outlined_comment), "")
-            }
-
+            PostIconButton(post, refreshing)
         }
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
-private fun PostFooterTextSection(post: Post) {
+private fun PostFooterTextSection(post: Post, navController: NavHostController) {
     Column(
         modifier = Modifier.padding(
             start = 5.dp,
@@ -183,6 +184,7 @@ private fun PostFooterTextSection(post: Post) {
             bottom = 5.dp
         )
     ) {
+        val showComments = remember { mutableStateOf(false) }
         Text(
             text = "${post.user?.displayName}: ${post.description!!}",
             Modifier.padding(end = 10.dp),
@@ -195,8 +197,13 @@ private fun PostFooterTextSection(post: Post) {
 
         Text(
             "View all ${post.comments.count()} comments",
-            style = MaterialTheme.typography.caption
+            style = MaterialTheme.typography.caption,
+            modifier = Modifier.clickable { showComments.value = true }
         )
+
+        if (showComments.value) {
+            CommentColumn(post.comments, navController)
+        }
 
         Spacer(modifier = Modifier.height(2.dp))
 
@@ -207,7 +214,7 @@ private fun PostFooterTextSection(post: Post) {
     }
 }
 
-private fun Long.getTimeElapsedText(): String {
+fun Long.getTimeElapsedText(): String {
     val now = System.currentTimeMillis()
     val time = this
 
@@ -219,13 +226,18 @@ private fun Long.getTimeElapsedText(): String {
 
 @Composable
 fun PostIconButton(
+    post: Post,
+    refreshing: MutableState<Boolean>,
     onClick: () -> Unit = { },
-    icon: @Composable () -> Unit
+    viewModel: PostViewModel = viewModel(),
 ) {
+    val openAddCommentDialog = remember { mutableStateOf(false) }
+    var comment by remember { mutableStateOf("") }
+
     Box(
         modifier = Modifier
             .clickable(
-                onClick = onClick
+                onClick = { openAddCommentDialog.value = true }
             )
             .padding(vertical = 10.dp, horizontal = 5.dp)
             .indication(
@@ -235,19 +247,34 @@ fun PostIconButton(
             .then(Modifier.size(24.dp)),
         contentAlignment = Alignment.Center
     ) {
-        icon()
+        Icon(ImageBitmap.imageResource(id = R.drawable.ic_outlined_comment), "")
     }
-}
 
-@Composable
-@Preview
-fun PostViewPreview() {
-    PostView(
-        post = Post(
-            id = "0",
-            image = "",
-            user = UserModel(email = "abc", displayName = "kamil"),
-            timeStamp = 100
-        ), onLikeToggle = {}, navController = rememberNavController()
-    )
+    if (openAddCommentDialog.value) {
+        AlertDialog(onDismissRequest = { openAddCommentDialog.value = false },
+            title = { Text(text = "Add Comment") },
+            text = {
+                OutlinedTextField(
+                    value = comment,
+                    onValueChange = { comment = it },
+                    placeholder = { Text("Comment...") }
+                )
+            },
+            confirmButton = {
+                Button(onClick = {
+                    val commentModel = CommentModel(
+                        text = comment,
+                        user = UsersRepository.getCurrentUser(),
+                        timeStamp = System.currentTimeMillis()
+                    )
+                    if (comment.isNotEmpty()) {
+                        viewModel.addComment(post, commentModel)
+                    }
+                    refreshing.value = true
+                    openAddCommentDialog.value = false
+                }) {
+                    Text("Confirm")
+                }
+            })
+    }
 }

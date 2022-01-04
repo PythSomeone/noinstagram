@@ -34,6 +34,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(homeNavController: NavHostController) {
     val navController = rememberNavController()
     val scaffoldState = rememberScaffoldState()
+
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -51,6 +52,7 @@ fun HomeScreen(homeNavController: NavHostController) {
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 fun HomeScreenUi(scope: CoroutineScope, navController: NavHostController) {
     val posts = PostsRepository.posts.value.filter { f ->
@@ -59,17 +61,17 @@ fun HomeScreenUi(scope: CoroutineScope, navController: NavHostController) {
         }
     }
 
-    var refreshing by remember { mutableStateOf(false) }
+    val refreshing = remember { mutableStateOf(false) }
     //refresh
     LaunchedEffect(refreshing) {
-        if (refreshing) {
+        if (refreshing.value) {
             delay(2000)
-            refreshing = false
+            refreshing.value = false
         }
     }
     SwipeRefresh(
-        state = rememberSwipeRefreshState(refreshing),
-        onRefresh = { refreshing = true },
+        state = rememberSwipeRefreshState(refreshing.value),
+        onRefresh = { refreshing.value = true },
         indicator = { state, refreshTriggerDistance ->
             SwipeRefreshIndicator(
                 state = state,
@@ -85,10 +87,11 @@ fun HomeScreenUi(scope: CoroutineScope, navController: NavHostController) {
                     onLikeToggle = {
                         scope.launch {
                             PostsRepository.toggleLike(post.id!!)
-                            refreshing = true
+                            refreshing.value = true
                         }
                     },
-                    navController = navController
+                    navController = navController,
+                    refreshing = refreshing
                 )
                 Spacer(modifier = Modifier.height(10.dp))
             }
@@ -97,11 +100,13 @@ fun HomeScreenUi(scope: CoroutineScope, navController: NavHostController) {
 
 }
 
+@ExperimentalMaterialApi
 @Composable
 fun Post(
     post: Post,
     onLikeToggle: (Post) -> Unit,
-    navController: NavHostController
+    navController: NavHostController,
+    refreshing: MutableState<Boolean>
 ) {
-    PostView(post, onLikeToggle, navController)
+    PostView(post, onLikeToggle, navController, refreshing)
 }
