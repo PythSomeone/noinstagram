@@ -1,5 +1,6 @@
 package com.example.noinstagram
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -35,6 +37,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
     else
         painterResource(id = R.drawable.ic_visibility_off)
 
+    val context = LocalContext.current
     Surface(
         color = MaterialTheme.colors.primary,
         modifier = Modifier
@@ -117,8 +120,14 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                     onClick = {
                         viewModel.signInWithEmailAndPassword(
                             userEmail.trim(),
-                            userPassword.trim()
+                            userPassword.trim(),
+                            navController
                         )
+                        Toast.makeText(
+                            context,
+                            "Successfully logged in...",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     },
                     shape = RoundedCornerShape(24.dp),
                     modifier = Modifier
@@ -172,6 +181,16 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 @Composable
 fun LoginScreenPreview() {
     LoginScreen(navController = rememberNavController())
+}
+
+@Composable
+fun LoginPageBackground() {
+    Image(
+        painterResource(id = R.mipmap.ic_first_page_background_foreground),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = Modifier.fillMaxHeight(),
+    )
 }
 
 @Composable
