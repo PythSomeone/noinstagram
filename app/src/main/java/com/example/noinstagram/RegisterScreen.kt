@@ -26,7 +26,6 @@ import com.example.noinstagram.ui.canva.NoInstagramCanvas
 import com.example.noinstagram.viewmodel.RegisterViewModel
 
 
-
 @Composable
 fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = viewModel()) {
     var userName by remember { mutableStateOf("") }

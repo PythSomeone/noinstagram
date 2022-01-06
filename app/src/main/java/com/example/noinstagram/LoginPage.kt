@@ -124,7 +124,10 @@ fun AppTitleName() {
     OutlinedTextField(
         value = email,
 //        leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = null) },
-        colors = TextFieldDefaults.outlinedTextFieldColors(focusedBorderColor = Color.White, unfocusedBorderColor = Color.White),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Color.White,
+            unfocusedBorderColor = Color.White
+        ),
         shape = RoundedCornerShape(24.dp),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         label = { Text(text = "Email", color = Color.White) },
@@ -139,7 +142,10 @@ fun AppTitleName() {
 
     OutlinedTextField(
         value = password,
-        colors = TextFieldDefaults.outlinedTextFieldColors(focusedBorderColor = Color.White, unfocusedBorderColor = Color.White),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Color.White,
+            unfocusedBorderColor = Color.White
+        ),
         shape = RoundedCornerShape(24.dp),
         label = { Text(text = "Password", color = Color.White) },
 //        placeholder = { Text(text = "12334444") },
@@ -163,7 +169,7 @@ fun AppTitleName() {
         text = { Text("Login") },
         backgroundColor = Color.White,
 
-    )
+        )
 
     Spacer(Modifier.height(60.dp))
 
@@ -175,10 +181,12 @@ fun AppTitleName() {
     )
     Spacer(Modifier.height(10.dp))
     TextButton(onClick = { /* Do something! */ }) {
-        Text(text = "Click here",
+        Text(
+            text = "Click here",
             fontSize = 16.sp,
             color = Color.Black,
-            fontFamily = FontFamily(Font(R.font.verdana)))
+            fontFamily = FontFamily(Font(R.font.verdana))
+        )
     }
     Spacer(Modifier.height(10.dp))
     Text(
@@ -238,7 +246,6 @@ fun LoginPageBackground() {
         modifier = Modifier.fillMaxHeight(),
     )
 }
-
 
 
 @Preview

@@ -27,7 +27,7 @@ fun UserProfileScreen(navController: NavHostController) {
     }
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(4.dp))
-        ProfileSection(navController, modifier = Modifier, postState, userState )
+        ProfileSection(navController, modifier = Modifier, postState, userState)
         Spacer(modifier = Modifier.height(25.dp))
         //refresh
         LaunchedEffect(refreshing) {

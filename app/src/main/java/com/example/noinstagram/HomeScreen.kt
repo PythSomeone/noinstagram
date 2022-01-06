@@ -88,6 +88,7 @@ fun HomeScreenUi(scope: CoroutineScope, navController: NavHostController) {
                         scope.launch {
                             PostsRepository.toggleLike(post.id!!)
                             refreshing.value = true
+                            refreshing.value = false
                         }
                     },
                     navController = navController,

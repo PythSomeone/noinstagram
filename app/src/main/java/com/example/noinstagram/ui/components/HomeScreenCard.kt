@@ -108,6 +108,7 @@ fun Offset.rotateBy(angle: Float): Offset {
 
 @Composable
 private fun PostHeader(post: Post, navController: NavHostController) {
+    val id = post.user?.id
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -124,10 +125,10 @@ private fun PostHeader(post: Post, navController: NavHostController) {
                     .clip(CircleShape)
             ) {
                 RoundImage(
-                    rememberImagePainter(post.user?.image),
+                    rememberImagePainter(UsersRepository.getUser(id!!)?.image),
                     modifier = Modifier
                         .fillMaxSize()
-                        .clickable { navController.navigate("PublicProfile/${post.user?.id}") }
+                        .clickable { navController.navigate("PublicProfile/${post.user.id}") }
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
@@ -135,7 +136,7 @@ private fun PostHeader(post: Post, navController: NavHostController) {
                 style = MaterialTheme.typography.subtitle2,
                 modifier = Modifier.clickable { navController.navigate("PublicProfile/${post.user.id}") })
         }
-        Icon(Icons.Filled.MoreVert, "")
+        Icon(Icons.Filled.MoreVert, "more")
     }
 }
 
@@ -167,7 +168,7 @@ private fun PostFooterIconSection(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AnimLikeButton(post, onLikeToggle)
+            AnimLikeButton(post, onLikeToggle, refreshing)
 
             PostIconButton(post, refreshing)
         }
@@ -247,7 +248,7 @@ fun PostIconButton(
             .then(Modifier.size(24.dp)),
         contentAlignment = Alignment.Center
     ) {
-        Icon(ImageBitmap.imageResource(id = R.drawable.ic_outlined_comment), "")
+        Icon(ImageBitmap.imageResource(id = R.drawable.ic_outlined_comment), "comment")
     }
 
     if (openAddCommentDialog.value) {

@@ -27,7 +27,10 @@ onSurface = Color.Black,
 )
 
 @Composable
-fun NoInstagramTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+fun NoInstagramTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable() () -> Unit
+) {
     val colors = if (darkTheme) {
         LightColorPalette
     } else {
@@ -35,9 +38,9 @@ fun NoInstagramTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Compo
     }
 
     MaterialTheme(
-            colors = colors,
-            typography = Typography,
-            shapes = Shapes,
-            content = content
+        colors = colors,
+        typography = Typography,
+        shapes = Shapes,
+        content = content
     )
 }

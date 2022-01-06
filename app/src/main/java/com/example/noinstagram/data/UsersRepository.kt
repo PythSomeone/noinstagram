@@ -20,11 +20,11 @@ object UsersRepository {
             val newValue = snapshot.getValue<UserModel>()
             newValue?.id = snapshot.key
             users.add(newValue!!)
-        }
-        else
+        } else
             users.add(snapshot.getValue<UserModel>() as UserModel)
         _users.value = users
     }
+
     fun changeUser(snapshot: DataSnapshot) {
         var users = listToArray()
         users.forEachIndexed { index, user ->
@@ -33,6 +33,7 @@ object UsersRepository {
         }
         _users.value = users
     }
+
     fun removeUser(snapshot: DataSnapshot) {
         var users = listToArray()
         users.forEachIndexed { index, user ->
@@ -41,6 +42,7 @@ object UsersRepository {
         }
         _users.value = users
     }
+
     private fun listToArray(): ArrayList<UserModel> {
         val userSnapshots = ArrayList<UserModel>()
         _users.value.forEach(action = {
@@ -51,7 +53,8 @@ object UsersRepository {
 
     fun toggleFollow(
         followerUid: String,
-        followedUid: String) {
+        followedUid: String
+    ) {
         var follower = getUser(followerUid)
         var followed = getUser(followedUid)
 
@@ -68,6 +71,7 @@ object UsersRepository {
             UserHandler.setUser(followed)
         }
     }
+
     fun getFollowers(uid: String): MutableList<UserModel> {
         val followers: MutableList<UserModel> = mutableListOf()
         getUser(uid)?.followers?.forEach(action = {

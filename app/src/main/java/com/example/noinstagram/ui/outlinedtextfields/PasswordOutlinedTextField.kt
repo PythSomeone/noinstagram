@@ -4,9 +4,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.*
-import androidx.compose.runtime.R
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -19,7 +17,7 @@ import androidx.compose.ui.unit.dp
 fun PasswordOutlinedTextField() {
     var password by remember { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false) }
-    val icon = if(passwordVisibility)
+    val icon = if (passwordVisibility)
         painterResource(id = com.example.noinstagram.R.drawable.ic_visibility_on)
     else
         painterResource(id = com.example.noinstagram.R.drawable.ic_visibility_off)
@@ -43,15 +41,15 @@ fun PasswordOutlinedTextField() {
         trailingIcon = {
             IconButton(onClick = {
                 passwordVisibility = !passwordVisibility
-            }){
+            }) {
                 Icon(
                     painter = icon,
-                    contentDescription = "Visibility icon")
+                    contentDescription = "Visibility icon"
+                )
             }
         },
-        visualTransformation = if(passwordVisibility) VisualTransformation.None
+        visualTransformation = if (passwordVisibility) VisualTransformation.None
         else PasswordVisualTransformation()
-
 
 
     )
