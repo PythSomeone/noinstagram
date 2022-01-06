@@ -43,7 +43,7 @@ class Test {
     fun loginPageTest() {
         composeTestRule.setContent {
             NoInstagramTheme {
-                LoginPage(navController = rememberNavController())
+                LoginScreen(navController = rememberNavController())
             }
         }
 

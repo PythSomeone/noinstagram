@@ -14,16 +14,17 @@ import kotlinx.coroutines.tasks.await
 class LoginViewModel : ViewModel() {
     val loadingState = MutableStateFlow(LoadingState.IDLE)
 
-    fun signInWithEmailAndPassword(email: String, password: String, navController : NavController) = viewModelScope.launch {
-        try {
-            loadingState.emit(LoadingState.LOADING)
-            Firebase.auth.signInWithEmailAndPassword(email, password).await()
-            loadingState.emit(LoadingState.LOADED)
-            navController.navigate("HomePage")
-        } catch (e: Exception) {
-            loadingState.emit(LoadingState.error(e.localizedMessage))
+    fun signInWithEmailAndPassword(email: String, password: String, navController: NavController) =
+        viewModelScope.launch {
+            try {
+                loadingState.emit(LoadingState.LOADING)
+                Firebase.auth.signInWithEmailAndPassword(email, password).await()
+                loadingState.emit(LoadingState.LOADED)
+                navController.navigate("HomePage")
+            } catch (e: Exception) {
+                loadingState.emit(LoadingState.error(e.localizedMessage))
+            }
         }
-    }
 
     fun signWithCredential(credential: AuthCredential) = viewModelScope.launch {
         try {

@@ -26,16 +26,16 @@ fun UserProfileScreen(navController: NavHostController) {
         PostsRepository
     }
     Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.height(4.dp))
-        ProfileSection(navController, modifier = Modifier, postState, userState)
-        Spacer(modifier = Modifier.height(25.dp))
-        //refresh
         LaunchedEffect(refreshing) {
             if (refreshing) {
                 delay(2000)
                 refreshing = false
             }
         }
+        Spacer(modifier = Modifier.height(4.dp))
+        ProfileSection(navController, modifier = Modifier, postState, userState)
+        Spacer(modifier = Modifier.height(25.dp))
+        //refresh
         SwipeRefresh(
             state = rememberSwipeRefreshState(refreshing),
             onRefresh = { refreshing = true },

@@ -202,13 +202,3 @@ fun LoginToAccountTextBox() {
         fontFamily = FontFamily(Font(R.font.verdana))
     )
 }
-
-@Composable
-fun LoginScreenBackground() {
-    Image(
-        painterResource(id = R.mipmap.ic_first_page_background_foreground),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = Modifier.fillMaxHeight(),
-    )
-}
