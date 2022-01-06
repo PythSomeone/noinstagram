@@ -15,7 +15,12 @@ class RegisterViewModel : ViewModel() {
     val loadingState = MutableStateFlow(LoadingState.IDLE)
     private val accountHandler = UserHandler
 
-    fun createUserWithEmailAndPassword(username: String, email: String, password: String, navController : NavController) = viewModelScope.launch {
+    fun createUserWithEmailAndPassword(
+        username: String,
+        email: String,
+        password: String,
+        navController: NavController
+    ) = viewModelScope.launch {
         try {
             loadingState.emit(LoadingState.LOADING)
             Firebase.auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener {

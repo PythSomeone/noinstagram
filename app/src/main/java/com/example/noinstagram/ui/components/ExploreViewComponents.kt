@@ -24,11 +24,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.example.noinstagram.data.PostsRepository
 import com.example.noinstagram.data.UsersRepository
@@ -59,7 +57,6 @@ fun SearchSection(
             "Explore",
             Modifier.padding(end = 10.dp),
             fontSize = 25.sp
-
         )
         OutlinedTextField(
             modifier = modifier
@@ -197,11 +194,4 @@ fun ExplorePostView(post: Post, navController: NavHostController) {
             .clip(RoundedCornerShape(10.dp))
             .clickable { navController.navigate("Post/${post.id}") }
     )
-}
-
-@ExperimentalFoundationApi
-@Composable
-@Preview
-fun ExplorePostPreview() {
-    ExplorePostSection(navController = rememberNavController())
 }

@@ -88,9 +88,12 @@ fun TopAppBar(
                                 onDismissRequest = { expanded.value = false },
                             ) {
                                 DropdownMenuItem(onClick = {
+                                    navController.navigate("FirstPage") {
+                                        popUpTo(navController.currentBackStackEntry?.destination?.route!!) {
+                                            inclusive = true
+                                        }
+                                    }
                                     Firebase.auth.signOut()
-                                    navController.navigate("FirstPage")
-                                    expanded.value = false
                                 }) {
                                     Icon(
                                         ImageVector.vectorResource(R.drawable.ic_baseline_logout_24),

@@ -48,7 +48,7 @@ fun ExploreScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(4.dp))
             SearchSection(
                 textValue = value,
-                label = "",
+                label = "Search",
                 onDoneActionClick =
                 {
                     view.clearFocus()

@@ -16,31 +16,33 @@ class ProfileViewModel : ViewModel() {
     private val userHandler = UserHandler
     private val storageHandler = StorageHandler
 
-    fun changeData(user: UserModel, description: String?, displayName: String?, imageUri : Uri) = viewModelScope.launch {
-        try {
-            loadingState.emit(LoadingState.LOADING)
-            user.description = description
-            user.displayName = displayName
-            Log.d("db", "working")
-            val photoUrl = storageHandler.uploadPicture(imageUri, StorageHandler.Folder.PROFILE)
-            user.image = photoUrl
-            userHandler.setUser(user)
-            loadingState.emit(LoadingState.LOADED)
-        } catch (e: Exception) {
-            loadingState.emit(LoadingState.error(e.localizedMessage))
+    fun changeData(user: UserModel, description: String?, displayName: String?, imageUri: Uri) =
+        viewModelScope.launch {
+            try {
+                loadingState.emit(LoadingState.LOADING)
+                user.description = description
+                user.displayName = displayName
+                Log.d("db", "working")
+                val photoUrl = storageHandler.uploadPicture(imageUri, StorageHandler.Folder.PROFILE)
+                user.image = photoUrl
+                userHandler.setUser(user)
+                loadingState.emit(LoadingState.LOADED)
+            } catch (e: Exception) {
+                loadingState.emit(LoadingState.error(e.localizedMessage))
+            }
         }
-    }
 
 
-    fun changeData(user: UserModel, description: String?, displayName: String?) = viewModelScope.launch {
-        try {
-            loadingState.emit(LoadingState.LOADING)
-            user.description = description
-            user.displayName = displayName
-            userHandler.setUser(user)
-            loadingState.emit(LoadingState.LOADED)
-        } catch (e: Exception) {
-            loadingState.emit(LoadingState.error(e.localizedMessage))
+    fun changeData(user: UserModel, description: String?, displayName: String?) =
+        viewModelScope.launch {
+            try {
+                loadingState.emit(LoadingState.LOADING)
+                user.description = description
+                user.displayName = displayName
+                userHandler.setUser(user)
+                loadingState.emit(LoadingState.LOADED)
+            } catch (e: Exception) {
+                loadingState.emit(LoadingState.error(e.localizedMessage))
+            }
         }
-    }
 }

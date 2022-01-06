@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.noinstagram.data.UsersRepository
 import com.example.noinstagram.model.UserModel
 import com.example.noinstagram.utils.database.UserHandler
 import com.example.noinstagram.viewmodel.LoginViewModel
@@ -59,7 +60,14 @@ fun GoogleButton(
                 coroutineScope.launch {
                     delay(2000)
                     val userModel = FirebaseAuth.getInstance().currentUser
-                    if (userModel != null) {
+                    if (userModel?.uid == UsersRepository.getCurrentUser()!!.id) {
+                        navController.navigate("HomePage") {
+                            popUpTo(navController.currentBackStackEntry?.destination?.route!!) {
+                                inclusive = true
+                            }
+                        }
+                    }
+                    if (userModel != null && userModel.uid != UsersRepository.getCurrentUser()!!.id) {
                         UserHandler.setUser(
                             UserModel(
                                 id = userModel.uid,
@@ -67,8 +75,12 @@ fun GoogleButton(
                                 displayName = userModel.displayName
                             )
                         )
-                        navController.navigate("HomePage")
-                    } else Log.d(TAG, "usermodel is null")
+                        navController.navigate("HomePage") {
+                            popUpTo(navController.currentBackStackEntry?.destination?.route!!) {
+                                inclusive = true
+                            }
+                        }
+                    } else Log.d(TAG, "userModel is null")
                 }
             } catch (e: ApiException) {
                 Log.w("TAG", "Google sign in failed", e)

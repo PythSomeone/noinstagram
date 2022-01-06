@@ -22,6 +22,7 @@ object PostsRepository {
         posts.add(snapshot.getValue<Post>() as Post)
         _posts.value = posts
     }
+
     fun changePost(snapshot: DataSnapshot) {
         var posts = createArray()
         posts.forEachIndexed { index, post ->
@@ -30,6 +31,7 @@ object PostsRepository {
         }
         _posts.value = posts
     }
+
     fun removePost(snapshot: DataSnapshot) {
         var posts = createArray()
         posts.forEachIndexed { index, post ->

@@ -14,17 +14,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.noinstagram.ui.buttons.FacebookButton
 import com.example.noinstagram.ui.buttons.GoogleButton
 import com.example.noinstagram.ui.buttons.LoginWithEmailButton
 import com.example.noinstagram.ui.canva.NoInstagramCanvas
-import com.example.noinstagram.ui.theme.NoInstagramTheme
 import com.example.noinstagram.utils.AuthResultContract
 import com.example.noinstagram.viewmodel.AuthViewModel
 import com.facebook.login.widget.LoginButton
@@ -140,14 +137,3 @@ fun FirstPageBackground() {
         modifier = Modifier.fillMaxHeight(),
     )
 }
-
-@ExperimentalMaterialApi
-@ExperimentalFoundationApi
-@Preview
-@Composable
-private fun FirstPagePreview() {
-    NoInstagramTheme {
-        FirstPage(navController = rememberNavController(), authViewModel = AuthViewModel())
-    }
-}
-

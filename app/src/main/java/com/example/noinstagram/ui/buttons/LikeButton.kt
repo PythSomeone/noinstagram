@@ -18,11 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.noinstagram.data.postIsLiked
 import com.example.noinstagram.model.Post
-import com.example.noinstagram.model.UserModel
 
 enum class LikeAnimationState {
     Initial,
@@ -35,7 +33,8 @@ private const val springRatio = Spring.DampingRatioHighBouncy
 @Composable
 fun AnimLikeButton(
     post: Post,
-    onLikeClick: (Post) -> Unit
+    onLikeClick: (Post) -> Unit,
+    refreshing: MutableState<Boolean>
 ) {
 
     var transitionState by remember {
@@ -48,6 +47,7 @@ fun AnimLikeButton(
                 onClick = {
                     transitionState = MutableTransitionState(LikeAnimationState.Start)
                     onLikeClick.invoke(post)
+                    refreshing.value = true
                 }
             )
             .indication(
@@ -116,22 +116,4 @@ fun AnimLikeButton(
             contentDescription = ""
         )
     }
-}
-
-@Preview
-@Composable
-private fun LikeButtonPreview() {
-    AnimLikeButton(
-        post = Post(
-            id = "0",
-            image = "https://source.unsplash.com/random/400x300",
-            user = UserModel(
-                email = "K@c.com",
-                displayName = "Kamil"
-            ),
-            userLikes = mutableListOf("1","2"),
-            timeStamp = System.currentTimeMillis() - (60000)
-        ),
-        onLikeClick = {
-        })
 }

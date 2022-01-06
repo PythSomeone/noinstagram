@@ -1,7 +1,5 @@
 package com.example.noinstagram.ui.components
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -95,7 +93,6 @@ fun ProfileSection(
 
     }
 }
-
 
 
 @Composable
@@ -204,7 +201,6 @@ fun PostSection(
 ) {
     val currentUserUid = userState.getCurrentUser()?.id
     val posts = postState.posts.value.filter { f -> f.user?.id == currentUserUid }.asReversed()
-    Log.i(TAG, "Posts= $posts")
     LazyVerticalGrid(
         cells = GridCells.Fixed(3),
         modifier = modifier

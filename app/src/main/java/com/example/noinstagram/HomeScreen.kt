@@ -55,10 +55,11 @@ fun HomeScreen(homeNavController: NavHostController) {
 @ExperimentalMaterialApi
 @Composable
 fun HomeScreenUi(scope: CoroutineScope, navController: NavHostController) {
+
     val posts = PostsRepository.posts.value.filter { f ->
-        UsersRepository.getCurrentUser()?.following!!.any { s ->
+        UsersRepository.getCurrentUser()?.following?.any { s ->
             s == f.user?.id
-        }
+        } == true
     }
 
     val refreshing = remember { mutableStateOf(false) }
@@ -88,6 +89,7 @@ fun HomeScreenUi(scope: CoroutineScope, navController: NavHostController) {
                         scope.launch {
                             PostsRepository.toggleLike(post.id!!)
                             refreshing.value = true
+                            refreshing.value = false
                         }
                     },
                     navController = navController,

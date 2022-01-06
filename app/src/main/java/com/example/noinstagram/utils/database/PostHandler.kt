@@ -13,14 +13,14 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import java.io.File
 
 object PostHandler {
 
-    private val database = Firebase.database("https://noinstagram-e6c32-default-rtdb.europe-west1.firebasedatabase.app")
+    private val database =
+        Firebase.database("https://noinstagram-e6c32-default-rtdb.europe-west1.firebasedatabase.app")
     private const val refName = "Posts"
 
-    suspend fun createNewPost(uri: Uri, description : String?) {
+    suspend fun createNewPost(uri: Uri, description: String?) {
         val newRef = ref().push()
         val picUrl: String
         StorageHandler.run {
@@ -57,19 +57,22 @@ object PostHandler {
     }
 
     fun postListener() {
-        ref().addChildEventListener(object: ChildEventListener {
+        ref().addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 PostsRepository.addPost(snapshot)
                 Log.d(ContentValues.TAG, "Children $snapshot was added")
             }
+
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 PostsRepository.changePost(snapshot)
                 Log.d(ContentValues.TAG, "Children $snapshot was changed")
             }
+
             override fun onChildRemoved(snapshot: DataSnapshot) {
                 PostsRepository.removePost(snapshot)
                 Log.d(ContentValues.TAG, "Children $snapshot was removed")
             }
+
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
             override fun onCancelled(error: DatabaseError) {}
         })
