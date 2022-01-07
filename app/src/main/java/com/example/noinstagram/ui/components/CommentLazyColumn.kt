@@ -19,7 +19,7 @@ import com.example.noinstagram.model.CommentModel
 @Composable
 fun CommentColumn(comments: MutableList<CommentModel>, navController: NavHostController) {
     Column(verticalArrangement = Arrangement.spacedBy((-5).dp)) {
-        for (comment in comments.asReversed()) {
+        for (comment in comments.asReversed().distinct()) {
             ListItem(
                 text = {
                     Row {

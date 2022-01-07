@@ -41,7 +41,7 @@ fun ListOfFollowingSelectedProfile(
         contentPadding = PaddingValues(top = 10.dp),
         reverseLayout = true
     ) {
-        items(following.value) { following ->
+        items(following.value.distinct()) { following ->
             ListItem(
                 text = {
                     following.displayName?.let {

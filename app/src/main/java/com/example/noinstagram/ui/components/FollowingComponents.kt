@@ -74,7 +74,7 @@ fun ListOfFollowing(
         contentPadding = PaddingValues(top = 10.dp),
         reverseLayout = true
     ) {
-        items(following) { following ->
+        items(following.distinct()) { following ->
             ListItem(
                 text = {
                     following.displayName?.let {
