@@ -105,17 +105,17 @@ fun StatSection(
     val currentUserId = userState.getCurrentUser()?.id
     val postsCount by remember {
         mutableStateOf(
-            postState.posts.value.filter { f -> f.user?.id == currentUserId }.count()
+            postState.posts.value.filter { f -> f.user?.id == currentUserId }.distinct().count()
         )
     }
     val followersCount by remember {
         mutableStateOf(
-            userState.getFollowers(currentUserId!!).count()
+            userState.getFollowers(currentUserId!!).distinct().count()
         )
     }
     val followingCount by remember {
         mutableStateOf(
-            userState.getFollowing(currentUserId!!).count()
+            userState.getFollowing(currentUserId!!).distinct().count()
         )
     }
     Row(
@@ -200,7 +200,8 @@ fun PostSection(
     navController: NavHostController
 ) {
     val currentUserUid = userState.getCurrentUser()?.id
-    val posts = postState.posts.value.filter { f -> f.user?.id == currentUserUid }.asReversed()
+    val posts =
+        postState.posts.value.filter { f -> f.user?.id == currentUserUid }.asReversed().distinct()
     LazyVerticalGrid(
         cells = GridCells.Fixed(3),
         modifier = modifier

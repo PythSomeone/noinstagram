@@ -80,7 +80,7 @@ class FollowViewModel : ViewModel() {
     fun getFollowersCount(uid: String) = viewModelScope.launch(Dispatchers.IO) {
         try {
             loadingState.emit(LoadingState.LOADING)
-            _followersCount.value = userRepo.getFollowers(uid).count().toString()
+            _followersCount.value = userRepo.getFollowers(uid).distinct().count().toString()
             loadingState.emit(LoadingState.LOADED)
         } catch (e: Exception) {
             loadingState.emit(LoadingState.error(e.localizedMessage))
@@ -91,7 +91,7 @@ class FollowViewModel : ViewModel() {
     fun getFollowingCount(uid: String) = viewModelScope.launch(Dispatchers.IO) {
         try {
             loadingState.emit(LoadingState.LOADING)
-            _followingCount.value = userRepo.getFollowing(uid).count().toString()
+            _followingCount.value = userRepo.getFollowing(uid).distinct().count().toString()
             loadingState.emit(LoadingState.LOADED)
         } catch (e: Exception) {
             loadingState.emit(LoadingState.error(e.localizedMessage))

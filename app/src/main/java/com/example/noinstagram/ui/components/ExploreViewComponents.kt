@@ -118,7 +118,7 @@ fun ProfilesInSearch(state: MutableState<TextFieldValue>, navController: NavHost
             }
             resultList
         }
-        items(filteredProfiles) { filteredProfile ->
+        items(filteredProfiles.distinct()) { filteredProfile ->
             ProfileListItem(
                 id = filteredProfile.id!!,
                 navController
@@ -171,7 +171,7 @@ fun ExplorePostSection(
         modifier = modifier
             .scale(1.01f)
     ) {
-        itemsIndexed(posts.asReversed()) { _, post ->
+        itemsIndexed(posts.asReversed().distinct()) { _, post ->
             ExplorePostView(post, navController)
             Spacer(modifier = Modifier.height(10.dp))
         }
