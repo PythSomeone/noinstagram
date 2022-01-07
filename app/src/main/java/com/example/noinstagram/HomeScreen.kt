@@ -65,14 +65,17 @@ fun HomeScreenUi(scope: CoroutineScope, navController: NavHostController) {
     val refreshing = remember { mutableStateOf(false) }
     //refresh
     LaunchedEffect(refreshing) {
-        if (refreshing.value) {
-            delay(2000)
-            refreshing.value = false
-        }
     }
     SwipeRefresh(
         state = rememberSwipeRefreshState(refreshing.value),
-        onRefresh = { refreshing.value = true },
+        onRefresh = {
+            scope.launch {
+                refreshing.value = true
+                delay(2000)
+                refreshing.value = false
+            }
+            refreshing.value = true
+        },
         indicator = { state, refreshTriggerDistance ->
             SwipeRefreshIndicator(
                 state = state,
