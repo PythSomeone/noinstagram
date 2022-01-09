@@ -30,6 +30,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -58,16 +59,19 @@ fun GoogleButton(
                 val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
                 viewModel.signWithCredential(credential)
                 coroutineScope.launch {
-                    delay(2000)
-                    val userModel = FirebaseAuth.getInstance().currentUser
-                    if (userModel?.uid == UsersRepository.getCurrentUser()!!.id) {
+                    var userModel: FirebaseUser?
+                    do {
+                        delay(2000)
+                        userModel = FirebaseAuth.getInstance().currentUser
+                    } while (userModel == null)
+                    if (UsersRepository.getCurrentUser() != null) {
                         navController.navigate("HomePage") {
                             popUpTo(navController.currentBackStackEntry?.destination?.route!!) {
                                 inclusive = true
                             }
                         }
                     }
-                    if (userModel != null && userModel.uid != UsersRepository.getCurrentUser()!!.id) {
+                    else {
                         UserHandler.setUser(
                             UserModel(
                                 id = userModel.uid,
@@ -80,7 +84,7 @@ fun GoogleButton(
                                 inclusive = true
                             }
                         }
-                    } else Log.d(TAG, "userModel is null")
+                    }
                 }
             } catch (e: ApiException) {
                 Log.w("TAG", "Google sign in failed", e)
