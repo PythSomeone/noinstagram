@@ -1,6 +1,5 @@
 package com.example.noinstagram.ui.buttons
 
-import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -70,8 +69,7 @@ fun GoogleButton(
                                 inclusive = true
                             }
                         }
-                    }
-                    else {
+                    } else {
                         UserHandler.setUser(
                             UserModel(
                                 id = userModel.uid,
