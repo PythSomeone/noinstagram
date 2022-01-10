@@ -37,7 +37,8 @@ fun SelectedProfilePostSection(
     user: UserModel?
 ) {
     val selectedUserUid = user?.id
-    val posts = postState.posts.value.filter { f -> f.user?.id == selectedUserUid }.asReversed()
+    val posts =
+        postState.posts.value.filter { f -> f.user?.id == selectedUserUid }.asReversed().distinct()
     LazyVerticalGrid(
         cells = GridCells.Fixed(3),
         modifier = modifier
@@ -142,7 +143,7 @@ fun SelectedProfileStatSection(
     followViewModel.getFollowersCount(user?.id!!)
     followViewModel.getFollowingCount(user.id!!)
     val userId = user.id
-    val postsCount = postState.posts.value.filter { f -> f.user?.id == userId }.count()
+    val postsCount = postState.posts.value.filter { f -> f.user?.id == userId }.distinct().count()
     val followersCount = followViewModel.followersCount.collectAsState().value
     val followingCount = followViewModel.followingCount.collectAsState().value
     Row(
