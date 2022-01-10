@@ -15,6 +15,12 @@ import com.example.noinstagram.utils.database.UserHandler
 import com.example.noinstagram.viewmodel.AuthViewModel
 import com.google.firebase.auth.FirebaseAuth
 
+private var listenersInitialized = false
+private fun initializeListeners() {
+    UserHandler.userListener()
+    PostHandler.postListener()
+    listenersInitialized = true
+}
 
 class MainActivity : ComponentActivity() {
     private val authViewModel: AuthViewModel by viewModels()
@@ -23,8 +29,8 @@ class MainActivity : ComponentActivity() {
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        UserHandler.userListener()
-        PostHandler.postListener()
+        if (listenersInitialized.not())
+            initializeListeners()
         setContent {
             NoInstagramTheme {
                 val navController = rememberNavController()
