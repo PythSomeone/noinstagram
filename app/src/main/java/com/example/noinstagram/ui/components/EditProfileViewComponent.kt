@@ -11,8 +11,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -56,7 +58,11 @@ fun EditProfileSection(
         imageUri = uri
     }
     val context = LocalContext.current
-    Column(modifier = modifier.fillMaxWidth()) {
+    val scrollState = rememberScrollState()
+    Column(modifier = modifier
+        .verticalScroll(state = scrollState)
+        .fillMaxWidth()
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -229,6 +235,7 @@ fun EditProfileSection(
                     colors = ButtonDefaults.buttonColors(backgroundColor = AddPostButtonColor)
                 )
 
+                Spacer(Modifier.height(20.dp))
 
             }
         )

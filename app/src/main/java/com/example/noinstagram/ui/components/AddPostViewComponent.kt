@@ -11,7 +11,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -50,19 +52,26 @@ fun AddPostSection(
         imageUri = uri
     }
     val context = LocalContext.current
-    Column(modifier = modifier.fillMaxWidth()) {
+    val scrollState = rememberScrollState()
+    Column(
+        modifier = modifier
+            .verticalScroll(state = scrollState)
+            .fillMaxWidth(),
+
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = 20.dp),
         ) {
 
             Spacer(modifier = Modifier.width(16.dp))
         }
 
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             content = {
                 AddPostTextBox()
@@ -140,6 +149,7 @@ fun AddPostSection(
                 )
 
                 Spacer(Modifier.height(20.dp))
+
                 if (imageUri != null) {
                     Button(
                         onClick = {
@@ -167,6 +177,7 @@ fun AddPostSection(
                     )
                 }
 
+                Spacer(Modifier.height(20.dp))
 
             }
         )
